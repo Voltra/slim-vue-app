@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="288f0e51-7746-48df-ac68-0e3a9df84527" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/dev/views/demo.twig" afterPath="$PROJECT_DIR$/dev/views/demo.twig" />
-      <change beforePath="$PROJECT_DIR$/dev/views/demo2.twig" afterPath="$PROJECT_DIR$/dev/views/demo2.twig" />
-    </list>
+    <list default="true" id="288f0e51-7746-48df-ac68-0e3a9df84527" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -288,12 +285,12 @@
       <option name="presentableId" value="Default" />
       <updated>1512912990923</updated>
       <workItem from="1512913003542" duration="6298000" />
-      <workItem from="1512920463655" duration="4759000" />
+      <workItem from="1512920463655" duration="4789000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11057000" />
+    <option name="totallyTimeSpent" value="11087000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />

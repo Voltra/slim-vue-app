@@ -15,7 +15,7 @@ require_once INCL_ROOT."/vendor/autoload.php";
 
 $configMode = require(DEV_ROOT."/config-mode.php");
 $app = new SlimApp([
-    "config" => Config::load(require(DEV_ROOT."/config/{$configMode}.php"))
+    "config" => Config::load(DEV_ROOT."/config/{$configMode}.php")
 ]);
 
 ////////////////////////////////////////////////
