@@ -28,17 +28,21 @@ require_once "route_autoload.php";
 
 $container = $app->getContainer();
 $container["view"] = function (Container $container) {
-    $twig_config = $container["config"]->get("twig");
+    $config = $container["config"];
+    $twig_config = $config->get("twig");
+    $debug = $config->get("debug");
     $view = new Twig(DEV_ROOT."/views", [
-        "cache" => $twig_config["cache"]
+        "cache" => $twig_config["cache"],
+        "debug" => $debug
     ]);
+
+    $env = $view->getEnvironment();
+    $env->addGlobal("debug", $debug);
 
     $basePath = rtrim(str_ireplace("index.php", "", $container["request"]->getUri()->getBasePath()), "/");
     $view->addExtension(new TwigExtension($container["router"], $basePath));
     $view->addExtension(new CsrfExtension($view));
 
-
-    $env = $view->getEnvironment();
     $env->setLexer(new Twig_Lexer($env, $twig_config["tags"]));
 
     return $view;

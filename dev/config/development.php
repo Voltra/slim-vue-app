@@ -1,5 +1,6 @@
 <?php
 return [
+	"debug" => true,
     "app" => [
         "url" => "http://localhost",
         "hash" => [
@@ -40,40 +41,11 @@ return [
         "tags" => [
             "tag_comment" => ["{#", "#}"],
             "tag_block" => ["{%", "%}"],
-            "tag_variable" => ["{@", "@}"],
+            "tag_variable" => ["{{", "}}"],
             "interpolation" => ["#{", "}"]
         ]
     ],
     "crsf" => [
         "key" => "csrf_token"
-    ],
-    "validation" => [
-        "register" => [
-            "email" => "required|email|uniqueEmail",
-            "username" => "required|alnumDash|max(60)|min(6)|uniqueUsername",//cf. db
-            "password" => "required|min(6)",
-            "password_confirm" => "required|matches(password)"
-        ],
-        "login" => [
-            "identifier" => "required",
-            "password" => "required"
-        ],
-        "change_password" => [
-            "old_password" => "required|matchesCurrentPassword",
-            "new_password" => "required|min(6)",//cf. validation.register.password
-            "password_confirm" => "required|matches(new_password)"
-        ],
-        "recover_password" => [
-            "email" => "required|email"
-        ],
-        "reset_password" => [
-            "password" => "required|min(6)",//cf. validation.register.password
-            "password_confirm" => "required|matches(password)"
-        ],
-        "profile" => [
-            "email" => "required|email|uniqueEmail",
-            "first_name" => "alpha|max(50)",//cf. db
-            "last_name" => "alpha|max(60)"//cf. db
-        ]
     ]
 ];
