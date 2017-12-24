@@ -27,6 +27,7 @@ config.target = "web";
 config.resolve = {};
 config.resolve.alias = {
 	"@js": path.resolve(thisPath, "dev/js/"),
+	"@components": path.resolve(thisPath, "dev/js/components/"),
 	"@css": path.resolve(thisPath, "dev/css/"),
 	"@img": path.resolve(thisPath, "dev/resources/img/"),
 	"$es-vue": "vue/dist/vue.esm.js",
@@ -35,7 +36,8 @@ config.resolve.alias = {
 config.resolve.extensions = [
 	".js",
 	".es6",
-	".vue"
+	".vue",
+    ".css"
 ];
 
 
@@ -95,6 +97,20 @@ config.module.rules.push({
 	test: /\.(woff2?|eot|ttf|otf)$/,
 	loader: "file-loader"
 });
+const styleLoaders = ["style-loader", "css-loader"];
+config.module.rules.push({
+    test: /\.css$/,
+    use: styleLoaders
+});
+config.module.rules.push({
+	test: /\.vue$/,
+	loader: "vue-loader",
+    options: {
+		loaders: {
+			css: `vue-style-loader${styleLoaders.map(e=>`!${e}`).join("")}`
+		}
+	}
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,9 +123,10 @@ if(!dev){
 	}));
 	config.plugins.push(new ManifestPlugin());
 	config.plugins.push(new CleanWebpackPlugin(["assets/js"], {
-		root: path.resolve(thisPath, "./"),
+		root: path.resolve(thisPath, "./public_html"),
 		verbose: true,
-		dry: false
+		dry: false,
+        exclude: ["globals", "globals/*", "globals/*.*"]
 	}));
 }
 
