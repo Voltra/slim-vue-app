@@ -38,6 +38,7 @@ $container["view"] = function (Container $container) {
 
     $env = $view->getEnvironment();
     $env->addGlobal("debug", $debug);
+	$env->addGlobal("manifest", json_decode(file_get_contents(PUBLIC_ROOT."/assets/js/manifest.json")));
 
     $basePath = rtrim(str_ireplace("index.php", "", $container["request"]->getUri()->getBasePath()), "/");
     $view->addExtension(new TwigExtension($container["router"], $basePath));
