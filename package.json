@@ -40,6 +40,6 @@
     "webpack-manifest-plugin": "^1.3.2"
   },
   "dependencies": {
-    "vue": "^2.5.9"
+    "vue": "^2.5.17"
   }
 }
