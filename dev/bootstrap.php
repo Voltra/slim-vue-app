@@ -1,54 +1,32 @@
 <?php
+require_once "../vendor/autoload.php";
 
-use App\Helpers\TwigExtensions\CsrfExtension;
-use Noodlehaus\Config;
+use App\Helpers\Path;
 use Slim\App as SlimApp;
-use Slim\Container;
-use Slim\Views\Twig;
-use Slim\Views\TwigExtension;
 
-define("INCL_ROOT", dirname(__DIR__));
-define("DEV_ROOT", INCL_ROOT."/dev");
-define("PUBLIC_ROOT", INCL_ROOT."/public_html");
 
-require_once INCL_ROOT."/vendor/autoload.php";
+require_once "env.php";
+$config = require_once("config.php");
+$db = require_once("db.php");
 
-$configMode = require(DEV_ROOT."/config-mode.php");
 $app = new SlimApp([
-    "config" => Config::load(DEV_ROOT."/config/{$configMode}.php")
+	"config" => $config,
+	"settings" => $config["settings"]
 ]);
+$container = $app->getContainer();
 
-////////////////////////////////////////////////
-//Add your middlewares here
-////////////////////////////////////////////////
+session_start();
+foreach(require_once(Path::dev("/container/actions.php")) as $class => $factory)
+	$container[$class] = $factory;
 
-$capsule = require_once("db_init.php");
-require_once "filters.php";
+foreach(["session", "flash", "view"] as $item)
+	$container[$item] = require_once(Path::dev("/container/{$item}.php"));
+
+$app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware($app))
+	->add(new \Slim\Middleware\Session($config["session"]))
+	->add(App\Middlewares\Csrf::from($container))
+	->add(App\Middlewares\Auth::from($container));
+
 require_once "route_autoload.php";
 
-$container = $app->getContainer();
-$container["view"] = function (Container $container) {
-    $config = $container["config"];
-    $twig_config = $config->get("twig");
-    $debug = $config->get("debug");
-    $view = new Twig(DEV_ROOT."/views", [
-        "cache" => $twig_config["cache"],
-        "debug" => $debug
-    ]);
-
-    $env = $view->getEnvironment();
-    $env->addGlobal("debug", $debug);
-	$env->addGlobal("manifest", json_decode(file_get_contents(PUBLIC_ROOT."/assets/js/manifest.json")));
-
-    $basePath = rtrim(str_ireplace("index.php", "", $container["request"]->getUri()->getBasePath()), "/");
-    $view->addExtension(new TwigExtension($container["router"], $basePath));
-    $view->addExtension(new CsrfExtension($view));
-
-    $env->setLexer(new Twig_Lexer($env, $twig_config["tags"]));
-
-    return $view;
-};
-
-////////////////////////////////////////////////
-//Configure your container here
-////////////////////////////////////////////////
+return $app;

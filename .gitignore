@@ -1,4 +1,9 @@
 .idea/
+.vscode/
+vendor/
+route_autoload.php
+.brackets.json
+schema.sql
 
 # Logs
 logs

@@ -1,0 +1,8 @@
+{% for type in ["failure", "success", "info"] %}
+	{% for msg in flash(type) %}
+		<div class="flash flash-folded flash-{{ type }}"> {# jq-flash #}
+			<button class="flash-close">&#x2716;</button><!-- a nice X-->
+			<p>{{ msg }}</p>
+		</div>
+	{% endfor %}
+{% endfor %}

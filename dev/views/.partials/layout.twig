@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr-FR">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="shrink-to-fit=no,width=device-width,height=device-height,initial-scale=1.0"/>
+		<meta name="tags" content="{% block tags %}{% endblock %}"/>
+		<title>{% block title %}{% endblock %}</title>
+
+		{% include module("globalCSS") %}
+		{% block css %}{% endblock %}
+
+		{% include module("globalJS") %}
+		{% block js %}{% endblock %}
+	</head>
+	<body>
+		{% include module("flash") %}
+		<div id="app">
+			{% block body %}{% endblock %}
+		</div>
+	</body>
+</html>

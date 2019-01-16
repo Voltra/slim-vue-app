@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pushd . > /dev/null
+\pushd . > /dev/null
 	INIT_SOURCE=${BASH_SOURCE[0]}
 	if [ -z $INIT_SOURCE ];then
 		INIT_SOURCE=$(echo .)
@@ -15,11 +15,11 @@ pushd . > /dev/null
 	fi
 	cd $(dirname ${BASEDIR}) > /dev/null
 	BASEDIR=$(pwd)
-popd  > /dev/null
+\popd  > /dev/null
 
 
 ##Aliases definition
 alias phpunit='${BASEDIR}/vendor/phpunit/phpunit/phpunit'
 alias punit='${BASEDIR}/vendor/phpunit/phpunit/phpunit --testdox'
-alias dumpRouteLoader='pushd . > /dev/null && cd ${BASEDIR}/dev && ./dumpRouteLoader.sh && popd > /dev/null'
+alias dumpRouteLoader='\pushd . > /dev/null && cd ${BASEDIR}/dev && ./dumpRouteLoader.sh && \popd > /dev/null'
 

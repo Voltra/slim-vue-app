@@ -1,18 +1,40 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// IMPORTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-const path = require("path");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const { resolve } = require("path");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const envLoaded = require("dotenv").load();
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// BASE DEFINITIONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-const dev = (process.env["NODE_ENV"] === "dev");
-const config = {};
-const thisPath = __dirname;
+if(envLoaded.error)
+	throw new Error("failed to load .env file");
+
+const mode = process.env["NODE_ENV"];
+const dev = (mode === "development");
+const config = {
+	resolve: {
+		alias: {},
+		extensions: []
+	},
+	entry: {},
+	output: {},
+	module: {
+		rules: []
+	},
+	plugins: [],
+	mode,
+};
+
+const path = src => resolve(__dirname, src);
+const styleLoaders = ["style-loader", "sass-loader"];
+const sassLoaders = [...styleLoaders, "sass-loader"];
+const libraries = /(node_module|bower_component)s/gi;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,40 +43,43 @@ const thisPath = __dirname;
 config.target = "web";
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// MODULE RESOLUTION
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.resolve = {};
-config.resolve.alias = {
-	"@js": path.resolve(thisPath, "dev/js/"),
-	"@components": path.resolve(thisPath, "dev/js/components/"),
-	"@css": path.resolve(thisPath, "dev/css/"),
-	"@img": path.resolve(thisPath, "dev/resources/img/"),
-	"$es-vue": "vue/dist/vue.esm.js",
-	"$vue": "vue/dist/vue.min.js"
-};
+config.resolve.alias["@js"] = path("dev/js/");
+config.resolve.alias["@vue"] = path("dev/vue/");
+config.resolve.alias["@components"] = path("dev/vue/components/");
+config.resolve.alias["@vplugins"] = path("dev/vue/plugins/");
+config.resolve.alias["@css"] = path("dev/sass/");
+config.resolve.alias["@img"] = path("dev/resources/img/");
+config.resolve.alias["$vue"] = "vue/dist/vue.esm.js";
+config.resolve.alias["$mvue"] = "vue/dist/vue.min.js";
+config.resolve.alias["$localStorage"] = "store";
+
 config.resolve.extensions = [
-	".js",
-	".es6",
-	".vue",
-    ".css"
-];
+	"js",
+	"vue",
+	"scss",
+	"css"
+].map(ext => `.${ext}`);
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// ENTRIES
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.entry = {};
+//config.entry["a"] = path("b");
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// OUTPUTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.output = {
-	path: path.resolve(thisPath, "public_html/assets/js"),
-	filename: dev ? "[name].bundle.js" : "[name].[chunkhash:8].bundle.js",
-	publicPath: "/assets/js/"
-};
+config.output["path"] = path("public_html/assets/js/");
+config.output["filename"] = dev ? "[name].bundle.js" : "[name].[chunkhash:8].bundle.js";
+config.output["publicPath"] = "/assets/js/";
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,20 +88,18 @@ config.output = {
 config.devtool = dev ? "cheap-module-eval-source-map" : false;
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// MODULES/LOADERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.module = {};
-config.module.rules = [];
 config.module.rules.push({
-	test: /\.(js|es6)$/,
-	exclude: /(node_modules|bower_components)/g,
-	use: [
-		"babel-loader"
-	]
+	test: /\.js$/i,
+	exclude: libraries,
+	use: "babel-loader"
 });
+
 config.module.rules.push({
-	test: /\.(png|jpe?g|gif|svg)$/,
+	test: /\.(png|jpe?g|gif|svg)$/i,
 	use: [
 		{
 			loader: "url-loader",
@@ -93,37 +116,41 @@ config.module.rules.push({
 		}
 	]
 });
+
 config.module.rules.push({
 	test: /\.(woff2?|eot|ttf|otf)$/,
 	loader: "file-loader"
 });
-const styleLoaders = ["style-loader", "css-loader"];
+
 config.module.rules.push({
     test: /\.css$/,
     use: styleLoaders
 });
+
 config.module.rules.push({
-	test: /\.vue$/,
+	test: /\.s[ac]ss$/i,
+	use: sassLoaders
+});
+
+config.module.rules.push({
+	test: /\.vue$/i,
 	loader: "vue-loader",
     options: {
 		loaders: {
-			css: `vue-style-loader${styleLoaders.map(e=>`!${e}`).join("")}`
+			css: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`
 		}
 	}
 });
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// PLUGINS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.plugins = [];
 if(!dev){
-	config.plugins.push(new UglifyJsPlugin({
-		sourceMap: false
-	}));
 	config.plugins.push(new ManifestPlugin());
 	config.plugins.push(new CleanWebpackPlugin(["assets/js"], {
-		root: path.resolve(thisPath, "./public_html"),
+		root: path("public_html/"),
 		verbose: true,
 		dry: false,
         exclude: ["globals", "globals/*", "globals/*.*"]
