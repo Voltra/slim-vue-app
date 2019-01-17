@@ -48,11 +48,16 @@ config.target = "web";
 //// MODULE RESOLUTION
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 config.resolve.alias["@js"] = path("dev/js/");
+config.resolve.alias["@tests"] = path("dev/js/tests/");
+config.resolve.alias["@e2e"] = path("dev/js/e2e/");
+
 config.resolve.alias["@vue"] = path("dev/vue/");
 config.resolve.alias["@components"] = path("dev/vue/components/");
 config.resolve.alias["@vplugins"] = path("dev/vue/plugins/");
+
 config.resolve.alias["@css"] = path("dev/sass/");
 config.resolve.alias["@img"] = path("dev/resources/img/");
+
 config.resolve.alias["$vue"] = "vue/dist/vue.esm.js";
 config.resolve.alias["$mvue"] = "vue/dist/vue.min.js";
 config.resolve.alias["$localStorage"] = "store";
@@ -118,12 +123,12 @@ config.module.rules.push({
 });
 
 config.module.rules.push({
-	test: /\.(woff2?|eot|ttf|otf)$/,
+	test: /\.(woff2?|eot|ttf|otf)$/i,
 	loader: "file-loader"
 });
 
 config.module.rules.push({
-    test: /\.css$/,
+    test: /\.css$/i,
     use: styleLoaders
 });
 

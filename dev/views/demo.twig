@@ -1,2 +1,9 @@
-This is a demo page <br/>
-{{  phpver }}
+{% extends layout() %}
+
+{% block title %} Homepage {% endblock %}
+
+{% block body %}
+	Hello World!<br/>
+	This is a demo page <br/>
+	{{ phpver }}
+{% endblock %}

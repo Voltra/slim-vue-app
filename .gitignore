@@ -4,6 +4,9 @@ vendor/
 route_autoload.php
 .brackets.json
 schema.sql
+geckodriver.log
+coverage/
+reports/
 
 # Logs
 logs

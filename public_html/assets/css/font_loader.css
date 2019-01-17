@@ -1,0 +1,18 @@
+/*********TEMPLATE**********\
+@font-face{
+	font-family: name;
+	src: url("");
+}
+\***************************/
+
+/*///////////////////////////////////////////////////////////////*/
+
+@font-face{
+	font-family: raleway;
+	src: url("/assets/fonts/raleway.ttf");
+}
+
+@font-face{
+	font-family: roboto;
+	src: url("/assets/fonts/roboto.ttf");
+}

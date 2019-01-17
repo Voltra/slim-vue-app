@@ -1,1 +1,8 @@
-Hello {{  user }} !
+{% extends layout() %}
+
+{% block title %} Homepage {% endblock %}
+
+{% block body %}
+	Hello World!<br/>
+	Hello {{ user }} !
+{% endblock %}

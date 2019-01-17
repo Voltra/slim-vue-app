@@ -1,0 +1,14 @@
+/*because we needa clear it boi*/
+div.clear_float{
+	clear:both;
+	width:0;
+	height:0;
+}
+
+
+/*test*/
+clear_float{
+	clear:both;
+	width:0;
+	height:0;
+}
