@@ -8,6 +8,8 @@ geckodriver.log
 coverage/
 reports/
 tests_output/
+package-lock.json
+composer.lock
 
 # Logs
 logs
