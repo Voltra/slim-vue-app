@@ -7,6 +7,7 @@ schema.sql
 geckodriver.log
 coverage/
 reports/
+tests_output/
 
 # Logs
 logs
