@@ -8,7 +8,6 @@
     "babel-plugin-transform-vue-jsx",
     "babel-plugin-jsx-v-model",
     "babel-plugin-transform-class-properties",
-    "babel-plugin-transform-object-rest-spread",
     "babel-plugin-transform-do-expressions",
     "babel-plugin-transform-function-bind"
   ]

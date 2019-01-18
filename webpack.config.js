@@ -4,6 +4,7 @@
 const { resolve } = require("path");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const envLoaded = require("dotenv").load();
 
 
@@ -31,7 +32,7 @@ const config = {
 };
 
 const path = src => resolve(__dirname, src);
-const styleLoaders = ["style-loader", "sass-loader"];
+const styleLoaders = ["style-loader", "css-loader"];
 const sassLoaders = [...styleLoaders, "sass-loader"];
 const libraries = /(node_module|bower_component)s/gi;
 
@@ -74,7 +75,7 @@ config.resolve.extensions = [
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// ENTRIES
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//config.entry["a"] = path("b");
+config.entry["demo"] = "@js/mainDemo.js";
 
 
 
@@ -100,11 +101,14 @@ config.devtool = dev ? "cheap-module-eval-source-map" : false;
 config.module.rules.push({
 	test: /\.js$/i,
 	exclude: libraries,
-	use: "babel-loader"
+	use: [
+		"babel-loader"
+	]
 });
 
 config.module.rules.push({
 	test: /\.(png|jpe?g|gif|svg)$/i,
+	exclude: libraries,
 	use: [
 		{
 			loader: "url-loader",
@@ -142,7 +146,9 @@ config.module.rules.push({
 	loader: "vue-loader",
     options: {
 		loaders: {
-			css: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`
+			css: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`,
+			scss: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`,
+			sass: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`,
 		}
 	}
 });
@@ -152,14 +158,15 @@ config.module.rules.push({
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// PLUGINS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+config.plugins.push(new VueLoaderPlugin());
 if(!dev){
-	config.plugins.push(new ManifestPlugin());
 	config.plugins.push(new CleanWebpackPlugin(["assets/js"], {
 		root: path("public_html/"),
 		verbose: true,
 		dry: false,
         exclude: ["globals", "globals/*", "globals/*.*"]
 	}));
+	config.plugins.push(new ManifestPlugin());
 }
 
 

@@ -2,8 +2,13 @@
 
 {% block title %} Homepage {% endblock %}
 
+{% block js %}
+	<script src="/assets/js/demo.bundle.js"></script>
+{% endblock %}
+
 {% block body %}
 	Hello World!<br/>
 	This is a demo page <br/>
-	{{ phpver }}
+	{{ phpver }} <br/>
+	<demo str="demo Vue component"></demo>
 {% endblock %}
