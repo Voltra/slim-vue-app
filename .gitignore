@@ -1,15 +1,16 @@
 .idea/
 .vscode/
 vendor/
-route_autoload.php
-.brackets.json
-schema.sql
-geckodriver.log
 coverage/
 reports/
 tests_output/
 package-lock.json
 composer.lock
+route_autoload.php
+.brackets.json
+schema.sql
+geckodriver.log
+selenium-server.logs
 
 # Logs
 logs

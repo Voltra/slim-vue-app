@@ -3,8 +3,8 @@
   "output_folder": "dev/js/e2e/reports/",
   "selenium": {
     "start_process": true,
-    "server_path": "bin/selenium-server-standalone-3.9.1.jar",
-    "host": "localhost",
+    "server_path": "./bin/selenium-server-standalone-3.9.1.jar",
+    "host": "127.0.0.1",
     "port": 9515,
     "cli_args": {
       "webdriver.firefox.driver": "node_modules/.bin/geckodriver"
