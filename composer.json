@@ -1,4 +1,4 @@
-{
+    {
     "name": "voltra/slim-vue-app",
     "description": "A good to go project setup for Slim VueJS Twig applications",
     "type": "library",
