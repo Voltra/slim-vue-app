@@ -1,33 +1,38 @@
 <?php
-
 namespace App\Helpers\TwigExtensions;
 
 
-use Slim\Views\Twig;
-use Twig_Extension;
-use Twig_SimpleFunction;
+use Slim\Container;
 
-class CsrfExtension extends Twig_Extension {
-    protected $view;
+class CsrfExtension extends \Twig_Extension{
+	/**@var Container $container*/
+	protected $container;
 
-    public function __construct(Twig $view){
-        $this->view = $view;
-    }
+	const KEY = "";
 
-    public function getFunctions()
-    {
-        return [
-            new Twig_SimpleFunction("csrf_input_tag", [
-                $this,
-                "csrfInput"
-            ])
-        ];
-    }
+	public function __construct(Container $container) {
+		$this->container = $container;
+	}
 
-    public function csrfInput(){
-        $csrfKey = $this->view["csrf_key"];
-        $csrfToken = $this->view["csrf_token"];
+	public function getFunctions() {
+		return [
+			new \Twig_SimpleFunction("csrf_input", [$this, "csrfInput"], [
+				"is_safe" => ["html"]
+			])
+		];
+	}
 
-        return "<input type='hidden' name='{$csrfKey}' value='{$csrfToken}'/>";
-    }
+	protected function key(): string{
+		return $this->container->view["csrf_key"];
+	}
+
+	protected function token(): string{
+		return $this->container->view["csrf_token"];
+	}
+
+	public function csrfInput(): string{
+		$key = $this->key();
+		$token = $this->token();
+		return '<input type="hidden" name="' . $key . '" value="' . $token . '"/>';
+	}
 }

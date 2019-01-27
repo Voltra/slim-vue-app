@@ -1,8 +1,8 @@
 <?php
 
-use App\Helpers\Twig\CsrfExtension;
-use App\Helpers\Twig\PathExtension;
-use App\Path;
+use App\Helpers\Path;
+use App\Helpers\TwigExtensions\CsrfExtension;
+use App\Helpers\TwigExtensions\PathExtension;
 use Knlv\Slim\Views\TwigMessages as TwigFlash;
 use Slim\Container;
 use Slim\Http\Environment;
