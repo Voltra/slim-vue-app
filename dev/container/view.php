@@ -10,7 +10,7 @@ use Slim\Http\Uri;
 use Slim\Views\Twig;
 use Slim\Views\TwigExtension as BaseTwigTools;
 
-return function(Container $c){
+return static function(Container $c){
 	$config = $c["config"];
 	$view = new Twig(Path::dev("/views"), $config["views"]);
 	$router = $c->router;

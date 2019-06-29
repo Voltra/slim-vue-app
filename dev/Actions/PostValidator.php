@@ -29,19 +29,19 @@ class PostValidator extends Action{
 
 			switch ($config["type"]){
 				case "bool":
-					$value = boolval($value);
+					$value = (bool)$value;
 					break;
 
 				case "int":
-					$value = intval($value);
+					$value = (int)$value;
 					break;
 
 				case "float":
-					$value = floatval($value);
+					$value = (float)$value;
 					break;
 
 				default:
-					$value = strval($value);
+					$value = (string)$value;
 					break;
 			}
 

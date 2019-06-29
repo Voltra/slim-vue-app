@@ -11,12 +11,12 @@ use App\Actions\Response;
 use Slim\Container;
 
 function registerAction(string $class){
-	return function(Container $c) use($class){
+	return static function(Container $c) use($class){
 		return new $class($c);
 	};
 }
 
-return array_reduce(array_map(function($class){
+return array_reduce(array_map(static function($class){
 	return [$class => registerAction($class)];
 }, [
 	PostValidator::class,

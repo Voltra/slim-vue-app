@@ -3,6 +3,7 @@ namespace App\Helpers\TwigExtensions;
 
 
 use Slim\Container;
+use Twig_SimpleFunction;
 
 class PathExtension extends \Twig_Extension{
 	/**@var Container $container*/
@@ -16,9 +17,9 @@ class PathExtension extends \Twig_Extension{
 
 	public function getFunctions() {
 		return [
-			new \Twig_SimpleFunction("partial", [$this, "partial"]),
-			new \Twig_SimpleFunction("layout", [$this, "layout"]),
-			new \Twig_SimpleFunction("module", [$this, "module"]),
+			new Twig_SimpleFunction("partial", [$this, "partial"]),
+			new Twig_SimpleFunction("layout", [$this, "layout"]),
+			new Twig_SimpleFunction("module", [$this, "module"]),
 		];
 	}
 

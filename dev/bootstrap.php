@@ -3,6 +3,8 @@ require_once "../vendor/autoload.php";
 
 use App\Helpers\Path;
 use Slim\App as SlimApp;
+use Slim\Middleware\Session as SlimSession;
+use Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware;
 
 
 require_once "env.php";
@@ -22,8 +24,8 @@ foreach(require_once(Path::dev("/container/actions.php")) as $class => $factory)
 foreach(["session", "flash", "view"] as $item)
 	$container[$item] = require_once(Path::dev("/container/{$item}.php"));
 
-$app->add(new \Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware($app))
-	->add(new \Slim\Middleware\Session($config["session"]))
+$app->add(new WhoopsMiddleware($app))
+	->add(new SlimSession($config["session"]))
 	->add(App\Middlewares\Csrf::from($container))
 	->add(App\Middlewares\Auth::from($container));
 

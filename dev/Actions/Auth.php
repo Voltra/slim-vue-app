@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserRemember;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
+use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Container;
 use Slim\Http\Response;
@@ -51,7 +52,7 @@ class Auth extends Action{
 	/**
 	 * Syncs the container state's with the session's
 	 */
-	protected function syncContainerAndSession(){
+	protected function syncContainerAndSession(): void{
 		if($this->session->exists($this->sessionKey))
 			//always sync in case of user hotswap
 			$this->container[$this->containerKey] = User::find($this->session->get($this->sessionKey));
@@ -62,18 +63,18 @@ class Auth extends Action{
 	/**
 	 * Determines whether or not a user is logged in
 	 * @return bool
-	 * @throws \Interop\Container\Exception\ContainerException
+	 * @throws ContainerException
 	 */
 	public function isLoggedIn(): bool{
 		$this->syncContainerAndSession();
 		return $this->container->has($this->containerKey)
-		&& !is_null($this->container->get($this->containerKey));
+		&& !empty($this->container->get($this->containerKey));
 	}
 
 	/**
 	 * Fetches the current logged in user
 	 * @return User|null
-	 * @throws \Interop\Container\Exception\ContainerException
+	 * @throws ContainerException
 	 */
 	public function user(): ?User{
 		$this->syncContainerAndSession();
@@ -93,7 +94,7 @@ class Auth extends Action{
 	 * Determines whether or not the user is logged as the on with the given username
 	 * @param string $username
 	 * @return bool
-	 * @throws \Interop\Container\Exception\ContainerException
+	 * @throws ContainerException
 	 */
 	public function isLoggedAs(string $username): bool{
 		$this->syncContainerAndSession();
@@ -132,7 +133,7 @@ class Auth extends Action{
 		$this->syncContainerAndSession();
 		$user = $this->user();
 
-		if(is_null($user))
+		if($user === null)
 			return $res;
 
 		$id = $this->random->generateString();
@@ -156,6 +157,7 @@ class Auth extends Action{
 	public function forceLogin(Response $res, string $username): UserResponsePair{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
+		$ret = $res;
 
 		if($user){
 			$ret = $this->logout($res);
@@ -202,12 +204,12 @@ class Auth extends Action{
 	 * @param ServerRequestInterface $rq
 	 * @param Response $res
 	 * @return UserResponsePair
-	 * @throws \Interop\Container\Exception\ContainerException
+	 * @throws ContainerException
 	 */
 	public function loginfromRemember(ServerRequestInterface $rq, Response $res): UserResponsePair{
 		$this->syncContainerAndSession();
 		$hasCookie = $this->cookies->has($rq, $this->cookieName);
-		if($this->isLoggedIn() || !$hasCookie)
+		if(!$hasCookie || $this->isLoggedIn())
 			return new UserResponsePair($res, $this->user());
 
 		/**@var string $cookie*/
@@ -218,12 +220,11 @@ class Auth extends Action{
 		if(empty(trim($cookie)) || count($credentials) !== 2)
 			return $emptyRes;
 
-		$id = $credentials[0];
-		$token = $credentials[1];
+		[$id, $token] = $credentials;
 		$hashedToken = $this->hash->hash($token);
 		$rem = UserRemember::fromRID($id);
 
-		if(is_null($rem) || !$this->hash->checkHash($hashedToken, $rem->token()))
+		if($rem === null || !$this->hash->checkHash($hashedToken, $rem->token()))
 			return $emptyRes;
 
 		$user = $rem->user;

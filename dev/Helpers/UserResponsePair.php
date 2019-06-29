@@ -18,6 +18,6 @@ class UserResponsePair {
 	}
 
 	public function asArray(): array{
-		return [$this->res, $this->user];
+		return [$this->response, $this->user];
 	}
 }

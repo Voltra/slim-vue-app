@@ -28,7 +28,7 @@ class Random extends Action {
 	}
 
 	public function generateString(): string{
-		if(is_null($this->alphabet) || empty($this->alphabet))
+		if(empty($this->alphabet))
 			return $this->generator->generateString($this->length);
 
 		return $this->generator->generateString($this->length, $this->alphabet);

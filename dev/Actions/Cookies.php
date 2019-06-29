@@ -29,7 +29,7 @@ class Cookies extends Action{
 		return SetCookie::create($name);
 	}
 
-	public function set(Response $res, SetCookie $cookie): ResponseInterface {
+	public function set(Response $res, SetCookie $cookie): Response {
 		return $this->upgrade(FigResponseCookies::set($res, $cookie));
 	}
 
@@ -38,14 +38,14 @@ class Cookies extends Action{
 	}
 
 	public function has(ServerRequestInterface $rq, string $name): bool{
-		return !is_null($this->get($rq, $name)->getValue());
+		return $this->get($rq, $name)->getValue() !== null;
 	}
 
-	public function expire(Response $res, string $name): ResponseInterface {
+	public function expire(Response $res, string $name): Response {
 		return $this->upgrade(FigResponseCookies::expire($res, $name));
 	}
 
-	public function remove(Response $res, string $name): ResponseInterface {
+	public function remove(Response $res, string $name): Response {
 		return $this->upgrade(FigResponseCookies::remove($res, $name));
 	}
 }

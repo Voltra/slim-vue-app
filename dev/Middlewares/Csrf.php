@@ -16,7 +16,6 @@ class Csrf extends Middleware {
 
 	public function __construct(Container $container) {
 		parent::__construct($container);
-//		$this->csrf = new CsrfAction($container);
 		$this->csrf = $container->get(CsrfAction::class);
 	}
 
@@ -26,9 +25,7 @@ class Csrf extends Middleware {
 
 		if(in_array($rq->getMethod(), static::METHODS)){
 			$params = $rq->getParsedBody();
-			$submittedToken = isset($params[$key])
-			? $params[$this->csrf->formKey()]
-			: "";
+			$submittedToken = $params[$key] ?? "";
 
 			if(!$this->csrf->isValid($submittedToken))
 				throw new CsrfTokenMismatch();
