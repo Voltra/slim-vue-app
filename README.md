@@ -12,7 +12,7 @@ The following items are required in order to take advantage of this starter proj
 * [Composer](https://getcomposer.org/download/) installed globally (available from the command-line)
 * [Node >= 8](https://nodejs.org/en/download/)
 * [NPM >= 6](https://nodejs.org/en/download/)
-* [DBMate](https://github.com/turnitin/dbmate)
+* [DBMate](https://github.com/turnitin/dbmate) (and therefore [go](https://golang.org/))
 
 
 
