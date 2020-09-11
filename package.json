@@ -95,8 +95,10 @@
 	"dependencies": {
 		"@voltra/json": "^3.0.1",
 		"color-hash": "^1.0.3",
+		"compary": "^0.1.0",
 		"db.js": "^0.15.0",
 		"hamburgers": "^1.1.3",
+		"sequency": "^0.19.2",
 		"spinner-lord": "^0.2.6",
 		"store": "^2.0.12",
 		"vanilla_flash": "^2.0.1",
