@@ -10,15 +10,24 @@ module.exports = {
 				corejs: 3, // use core-js@3
 			},
 		],
+		[
+			"@vue/babel-preset-jsx",
+			{
+				functional: true,
+				injectH: true,
+				vModel: true,
+				vOn: true,
+			},
+		],
 	],
 	plugins: [
 		"@babel/plugin-proposal-function-bind",
 		"@babel/plugin-proposal-class-properties",
 		"@babel/plugin-proposal-object-rest-spread",
 		"@babel/plugin-proposal-do-expressions",
-
+		"@babel/plugin-syntax-dynamic-import",
+		"babel-plugin-dynamic-import-webpack",
 		//
-
 		"@babel/plugin-syntax-jsx",
 		"babel-plugin-transform-jsx",
 		"babel-plugin-jsx-v-model",

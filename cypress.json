@@ -1,0 +1,10 @@
+{
+	"baseUrl": "http://www.slim-vue-app.ninja",
+	"testFiles": "**/*.js",
+	"fixturesFolder": "dev/js/e2e/fixtures",
+	"integrationFolder": "dev/js/e2e/tests",
+	"screenshotsFolder": "dev/js/e2e/screenshots",
+	"videosFolder": "dev/js/e2e/videos",
+	"pluginsFile": "dev/js/e2e/plugins",
+	"supportFile": "dev/js/e2e/support"
+}
