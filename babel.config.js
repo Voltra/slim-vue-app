@@ -40,6 +40,5 @@ module.exports = {
 		"@babel/plugin-syntax-jsx",
 		"babel-plugin-transform-jsx",
 		"babel-plugin-jsx-v-model",
-		"babel-plugin-import",
 	],
 };

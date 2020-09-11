@@ -22,4 +22,5 @@
 alias phpunit='${BASEDIR}/vendor/phpunit/phpunit/phpunit'
 alias punit='${BASEDIR}/vendor/phpunit/phpunit/phpunit --testdox'
 alias dumpRouteLoader='\pushd . > /dev/null && cd ${BASEDIR}/dev && ./dumpRouteLoader.sh && \popd > /dev/null'
+alias npmr='npm run'
 

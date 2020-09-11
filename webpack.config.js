@@ -6,27 +6,32 @@
 //// IMPORTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const path = require("path");
+const DotEnvPlugin = require("dotenv-webpack");
 const ManifestPlugin = require("webpack-manifest-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
 const WebpackProgessBar = require("webpack-progress-bar");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 // const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const envLoaded = require("dotenv").load();
+const dotenvExpand = require("dotenv-expand");
+const envResult = require("dotenv-safe").config();
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// BASE DEFINITIONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-if(envLoaded.error)
-	throw new Error("failed to load .env file");
+dotenvExpand(envResult);
+if(envResult.error)
+	throw new Error("Failed to load .env file");
 
 const mode = process.env.NODE_ENV;
 const dev = (mode === "development");
+
 const config = {
+	mode,
 	resolve: {
 		alias: {},
 		extensions: [],
@@ -35,7 +40,6 @@ const config = {
 	output: {},
 	module: { rules: [] },
 	plugins: [],
-	mode,
 };
 
 const here = src => path.resolve(__dirname, src);
@@ -87,8 +91,8 @@ config.entry.demo = "@js/mainDemo.js";
 //// OUTPUTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const { output } = config;
-output.path = here("public_html/assets/js/");
-output.filename = dev ? "[name].bundle.js" : "[name].[chunkhash:8].bundle.js";
+output.path = here("public_html/assets/");
+output.filename = `js/[name].${dev ? "[chunkhash:8]." : ""}bundle.js`;
 output.publicPath = "/assets/js/";
 
 
@@ -183,6 +187,8 @@ rules.push({
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const { plugins } = config;
 
+plugins.push(new DotEnvPlugin());
+
 plugins.push(new WebpackProgessBar());
 
 plugins.push(new FriendlyErrorsWebpackPlugin({}));
@@ -194,7 +200,7 @@ plugins.push(new VueLoaderPlugin());
 plugins.push(new FaviconsWebpackPlugin({
 	logo: here("dev/resources/favicon.png"),
 	inject: false,
-	outputPath: here("public_html/assets/img/favicons/"), //TODO: Output path
+	outputPath: "img/favicons/",
 	mode: "webapp",
 	devMode: "webapp",
 	favicons: {
@@ -224,21 +230,13 @@ plugins.push(new FaviconsWebpackPlugin({
 	},
 }));
 
+plugins.push(new CleanWebpackPlugin({
+	verbose: true,
+	dry: false,
+	cleanOnceBeforeBuildPatterns: ["js/*"],
+}));
 
-if(!dev){
-	plugins.push(new CleanWebpackPlugin(["assets/js"], {
-		root: here("public_html/"),
-		verbose: true,
-		dry: false,
-		exclude: [
-			"globals",
-			"globals/*",
-			"globals/*.*",
-		],
-	}));
-
-	plugins.push(new ManifestPlugin());
-}
+plugins.push(new ManifestPlugin());
 
 
 

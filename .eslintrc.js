@@ -72,7 +72,6 @@ module.exports = {
 		],
 		"import/order": "error",
 		"import/dynamic-import-chunkname": "off",
-		// "import/no-unresolved": "off", //WARNING: Temporary fix because the plugin cannot resolve webpack aliases properly
 
 
 		//// POSSIBLE ERRORS
