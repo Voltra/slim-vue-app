@@ -1,19 +1,19 @@
-import $ls from "$localStorage"
+import $ls from "store";
 
-const plugin = {
-	install(Vue){
-		Object.defineProperties(Vue.prototype, {
-			$localStorage: {
-				get(){ return $ls; }
+/**
+ * @param {import("vue").VueConstructor} Vue
+ */
+export default function localStorage(Vue){
+	Object.defineProperties(Vue.prototype, {
+		$localStorage: {
+			get(){
+				return $ls;
 			},
-			$ls: {
-				get(){ return $ls; }
-			}
-		});
-	}
-};
-
-if(typeof window !== "undefined" && window.Vue)
-	Vue.use(plugin);
-
-export default plugin
+		},
+		$ls: {
+			get(){
+				return $ls;
+			},
+		},
+	});
+}

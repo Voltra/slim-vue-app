@@ -13,7 +13,7 @@ const WebpackProgessBar = require("webpack-progress-bar");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const envLoaded = require("dotenv").load();
 
 
@@ -39,8 +39,6 @@ const config = {
 };
 
 const here = src => path.resolve(__dirname, src);
-const styleLoaders = ["style-loader", "css-loader"];
-const sassLoaders = [...styleLoaders, "sass-loader"];
 const libraries = /(node_module|bower_component)s/gi;
 
 
@@ -62,16 +60,12 @@ alias["@js"] = here("dev/js/");
 alias["@tests"] = here("dev/js/tests/");
 alias["@e2e"] = here("dev/js/e2e/");
 
-alias["@vue"] = here("dev/vue/");
+// alias["@vue"] = here("dev/vue/");
 alias["@components"] = here("dev/vue/components/");
 alias["@vplugins"] = here("dev/vue/plugins/");
 
 alias["@css"] = here("dev/sass/");
 alias["@img"] = here("dev/resources/img/");
-
-alias.$vue = "vue/dist/vue.esm.js";
-alias.$mvue = "vue/dist/vue.min.js";
-alias.$localStorage = "store";
 
 extensions.push(
 	".js",

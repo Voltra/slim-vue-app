@@ -5,7 +5,6 @@
 const rulesDir = require("eslint-plugin-rulesdir");
 rulesDir.RULES_DIR = "eslint-rules";
 
-
 const minItems = 3;
 const maxDepth = 4;
 const maxNest = 3;
@@ -15,7 +14,11 @@ const maxLineNr = 80;
 
 module.exports = {
 	parser: "babel-eslint",
-	extends: "eslint:recommended",
+	extends: [
+		"eslint:recommended",
+		/* "plugin:import/errors",
+		"plugin:import/warnings", */
+	],
 	env: { browser: true },
 	parserOptions: {
 		ecmaVersion: 2020,
@@ -25,7 +28,24 @@ module.exports = {
 			impliedStrict: true, // act as if strict mode is enabled everywhere
 		},
 	},
-	plugins: [ "rulesdir", "import" ],
+	settings: {
+		"import/resolver": {
+			node: {
+				paths: ["dev/js/"],
+				extensions: [
+					".js",
+					".jsx",
+					".ts",
+					".tsx",
+				],
+			},
+		},
+	},
+	plugins: [
+		"rulesdir",
+		"babel",
+		"import",
+	],
 	rules: {
 		//// PLUGIN: import
 		"import/named": "error",
@@ -52,6 +72,7 @@ module.exports = {
 		],
 		"import/order": "error",
 		"import/dynamic-import-chunkname": "off",
+		// "import/no-unresolved": "off", //WARNING: Temporary fix because the plugin cannot resolve webpack aliases properly
 
 
 		//// POSSIBLE ERRORS

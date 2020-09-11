@@ -1,17 +1,14 @@
-import { flash } from "vanilla_flash"
+import { flash } from "vanilla_flash";
 
-const plugin = {
-	install(Vue){
-		Object.defineProperties(Vue.prototype, {
-			"$flash": {
-				get(){ return flash; }
-			}
-		})
-	}
-};
-
-if(typeof window != "undefined" && window.Vue)
-	Vue.use(plugin);
-
-
-export default plugin
+/**
+ * @param {import("vue").VueConstructor} Vue
+ */
+export default function vanillaFlash(Vue){
+	Object.defineProperties(Vue.prototype, {
+		$flash: {
+			get(){
+				return flash;
+			},
+		},
+	});
+}
