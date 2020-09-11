@@ -1,10 +1,19 @@
+/* eslint-env node */
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// IMPORTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-const { resolve } = require("path");
+const path = require("path");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const VueLoaderPlugin = require("vue-loader/lib/plugin");
+const WebpackProgessBar = require("webpack-progress-bar");
+const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
+const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const envLoaded = require("dotenv").load();
 
 
@@ -15,23 +24,21 @@ const envLoaded = require("dotenv").load();
 if(envLoaded.error)
 	throw new Error("failed to load .env file");
 
-const mode = process.env["NODE_ENV"];
+const mode = process.env.NODE_ENV;
 const dev = (mode === "development");
 const config = {
 	resolve: {
 		alias: {},
-		extensions: []
+		extensions: [],
 	},
 	entry: {},
 	output: {},
-	module: {
-		rules: []
-	},
+	module: { rules: [] },
 	plugins: [],
 	mode,
 };
 
-const path = src => resolve(__dirname, src);
+const here = src => path.resolve(__dirname, src);
 const styleLoaders = ["style-loader", "css-loader"];
 const sassLoaders = [...styleLoaders, "sass-loader"];
 const libraries = /(node_module|bower_component)s/gi;
@@ -48,65 +55,84 @@ config.target = "web";
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// MODULE RESOLUTION
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.resolve.alias["@js"] = path("dev/js/");
-config.resolve.alias["@tests"] = path("dev/js/tests/");
-config.resolve.alias["@e2e"] = path("dev/js/e2e/");
+const { alias, extensions } = config.resolve;
 
-config.resolve.alias["@vue"] = path("dev/vue/");
-config.resolve.alias["@components"] = path("dev/vue/components/");
-config.resolve.alias["@vplugins"] = path("dev/vue/plugins/");
+alias["@"] = here("dev/");
+alias["@js"] = here("dev/js/");
+alias["@tests"] = here("dev/js/tests/");
+alias["@e2e"] = here("dev/js/e2e/");
 
-config.resolve.alias["@css"] = path("dev/sass/");
-config.resolve.alias["@img"] = path("dev/resources/img/");
+alias["@vue"] = here("dev/vue/");
+alias["@components"] = here("dev/vue/components/");
+alias["@vplugins"] = here("dev/vue/plugins/");
 
-config.resolve.alias["$vue"] = "vue/dist/vue.esm.js";
-config.resolve.alias["$mvue"] = "vue/dist/vue.min.js";
-config.resolve.alias["$localStorage"] = "store";
+alias["@css"] = here("dev/sass/");
+alias["@img"] = here("dev/resources/img/");
 
-config.resolve.extensions = [
-	"js",
-	"vue",
-	"scss",
-	"css"
-].map(ext => `.${ext}`);
+alias.$vue = "vue/dist/vue.esm.js";
+alias.$mvue = "vue/dist/vue.min.js";
+alias.$localStorage = "store";
+
+extensions.push(
+	".js",
+	".vue",
+	".scss",
+	".css"
+);
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// ENTRIES
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.entry["demo"] = "@js/mainDemo.js";
+config.entry.demo = "@js/mainDemo.js";
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// OUTPUTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.output["path"] = path("public_html/assets/js/");
-config.output["filename"] = dev ? "[name].bundle.js" : "[name].[chunkhash:8].bundle.js";
-config.output["publicPath"] = "/assets/js/";
+const { output } = config;
+output.path = here("public_html/assets/js/");
+output.filename = dev ? "[name].bundle.js" : "[name].[chunkhash:8].bundle.js";
+output.publicPath = "/assets/js/";
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// DEV TOOLS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.devtool = dev ? "cheap-module-eval-source-map" : false;
+config.stats = "minimal"; // compatibility w/ friendly errors plugin
+config.devtool = dev ? "source-map" : false;
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// MODULES/LOADERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.module.rules.push({
-	test: /\.js$/i,
+const { rules } = config.module;
+const jsRegex = /\.[jt]sx?$/i;
+
+rules.push({
+	enforce: "pre",
+	test: jsRegex,
 	exclude: libraries,
-	use: [
-		"babel-loader"
-	]
+	loader: "eslint-loader",
+	options: {
+		fix: true,
+		cache: true,
+		quiet: true, // cf. https://webpack.js.org/loaders/eslint-loader/#quiet
+		rulesdir: here("eslint-rules"),
+	},
 });
 
-config.module.rules.push({
+rules.push({
+	test: jsRegex,
+	exclude: libraries,
+	use: ["babel-loader"],
+});
+
+rules.push({
 	test: /\.(png|jpe?g|gif|svg)$/i,
 	exclude: libraries,
 	use: [
@@ -114,43 +140,46 @@ config.module.rules.push({
 			loader: "url-loader",
 			options: {
 				limit: 8192,
-				name: "[name].[hash:8].[ext]"
-			}
+				name: "[name].[hash:8].[ext]",
+			},
 		},
 		{
 			loader: "img-loader",
-			options: {
-				enabled: !dev
-			}
-		}
-	]
+			options: { enabled: !dev },
+		},
+	],
 });
 
-config.module.rules.push({
+rules.push({
 	test: /\.(woff2?|eot|ttf|otf)$/i,
-	loader: "file-loader"
+	loader: "file-loader",
 });
 
-config.module.rules.push({
-    test: /\.css$/i,
-    use: styleLoaders
-});
-
-config.module.rules.push({
+rules.push({
 	test: /\.s[ac]ss$/i,
-	use: sassLoaders
+	use: [
+		/* {
+			loader: MiniCssExtractPlugin.loader,
+			options: {},
+		}, */
+		{
+			loader: "css-loader",
+			options: {
+				sourceMap: true,
+				url: false,
+			},
+		},
+		"postcss-loader",
+		{
+			loader: "sass-loader",
+			options: { sourceMap: true },
+		},
+	],
 });
 
-config.module.rules.push({
+rules.push({
 	test: /\.vue$/i,
 	loader: "vue-loader",
-    options: {
-		loaders: {
-			css: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`,
-			scss: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`,
-			sass: `vue-style-loader${sassLoaders.map(e=>`!${e}`).join("")}`,
-		}
-	}
 });
 
 
@@ -158,15 +187,63 @@ config.module.rules.push({
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// PLUGINS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-config.plugins.push(new VueLoaderPlugin());
+const { plugins } = config;
+
+plugins.push(new WebpackProgessBar());
+
+plugins.push(new FriendlyErrorsWebpackPlugin({}));
+
+plugins.push(new CompressionPlugin());
+
+plugins.push(new VueLoaderPlugin());
+
+plugins.push(new FaviconsWebpackPlugin({
+	logo: here("dev/resources/favicon.png"),
+	inject: false,
+	outputPath: here("public_html/assets/img/favicons/"), //TODO: Output path
+	mode: "webapp",
+	devMode: "webapp",
+	favicons: {
+		appName: "[SlimVueApp] App name",
+		appDescription: "[SlimVueApp] App description",
+		background: "#e9ebee",
+		// eslint-disable-next-line camelcase
+		theme_color: "#3b5998",
+		developerName: "Voltra",
+		developerURL: "https://ludwigguerin.fr",
+
+		icons: {
+			favicons: [
+				"favicon.ico",
+				"favicon-32x32.png",
+				"favicon-16x16.png",
+			],
+			appleIcon: ["apple-touch-icon.png"],
+			//
+			appleStartup: false,
+			coast: false,
+			android: false,
+			windows: false,
+			yandex: false,
+			firefox: false,
+		},
+	},
+}));
+
+
 if(!dev){
-	config.plugins.push(new CleanWebpackPlugin(["assets/js"], {
-		root: path("public_html/"),
+	plugins.push(new CleanWebpackPlugin(["assets/js"], {
+		root: here("public_html/"),
 		verbose: true,
 		dry: false,
-        exclude: ["globals", "globals/*", "globals/*.*"]
+		exclude: [
+			"globals",
+			"globals/*",
+			"globals/*.*",
+		],
 	}));
-	config.plugins.push(new ManifestPlugin());
+
+	plugins.push(new ManifestPlugin());
 }
 
 

@@ -1,3 +1,5 @@
+bkp/
+tmp/
 .idea/
 .vscode/
 vendor/
@@ -9,6 +11,10 @@ composer.lock
 route_autoload.php
 .brackets.json
 schema.sql
+yarn.lock
+
+
+
 
 # Logs
 logs

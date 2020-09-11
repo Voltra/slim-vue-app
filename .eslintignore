@@ -1,0 +1,8 @@
+node_modules/
+eslint-rules/
+dist/
+bkp/
+public_html/
+templates/
+./*
+!./src/*
