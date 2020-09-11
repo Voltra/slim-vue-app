@@ -1,0 +1,59 @@
+$defaultMargin: 0 !default;
+
+@mixin verticalMargin($value: $defaultMargin) {
+	margin-top: $value;
+	margin-bottom: $value;
+}
+
+@mixin horizontalMargin($value: $defaultMargin) {
+	margin-left: $value;
+	margin-right: $value;
+}
+
+@mixin centerMargin {
+	@include horizontalMargin(auto);
+}
+
+////
+
+@mixin marginTR($value: $defaultMargin) {
+	margin-top: $value;
+	margin-right: $value;
+}
+
+@mixin marginTL($value: $defaultMargin) {
+	margin-top: $value;
+	margin-left: $value;
+}
+
+@mixin marginBR($value: $defaultMargin) {
+	margin-bottom: $value;
+	margin-right: $value;
+}
+
+@mixin marginBL($value: $defaultMargin) {
+	margin-bottom: $value;
+	margin-left: $value;
+}
+
+////
+
+@mixin marginTRL($value: $defaultMargin) {
+	@include horizontalMargin($value);
+	margin-top: $value;
+}
+
+@mixin marginRBL($value: $defaultMargin) {
+	@include horizontalMargin($value);
+	margin-bottom: $value;
+}
+
+@mixin marginTBL($value: $defaultMargin) {
+	@include verticalMargin($value);
+	margin-left: $value;
+}
+
+@mixin marginTRB($value: $defaultMargin) {
+	@include verticalMargin($value);
+	margin-right: $value;
+}
