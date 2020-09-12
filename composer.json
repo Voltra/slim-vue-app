@@ -2,19 +2,19 @@
 	"name": "voltra/slim-vue-app",
 	"description": "A good to go project setup for Slim VueJS Twig applications",
 	"type": "project",
-    "authors": [
-        {
-            "name": "Voltra",
-            "email": "ludwig.guerin.98@gmx.fr"
-        }
-    ],
-    "minimum-stability": "stable",
-    "autoload": {
-        "psr-4": {
-            "App\\": "dev",
-            "App\\Tests\\": "Tests"
-        }
-    },
+	"authors": [
+		{
+			"name": "Voltra",
+			"email": "ludwig.guerin.98@gmx.fr"
+		}
+	],
+	"minimum-stability": "stable",
+	"autoload": {
+		"psr-4": {
+			"App\\": "dev",
+			"App\\Tests\\": "tests"
+		}
+	},
 	"require": {
 		"php": ">=7.2.0",
 		"slim/slim": "^4.5",

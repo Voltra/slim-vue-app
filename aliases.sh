@@ -19,8 +19,8 @@
 
 
 ##Aliases definition
-alias phpunit='${BASEDIR}/vendor/phpunit/phpunit/phpunit'
-alias punit='${BASEDIR}/vendor/phpunit/phpunit/phpunit --testdox'
-alias dumpRouteLoader='\pushd . > /dev/null && cd ${BASEDIR}/dev && ./dumpRouteLoader.sh && \popd > /dev/null'
+alias phpunit='${BASEDIR}/vendor/bin/phpunit'
+alias punit='phpunit --testdox'
+alias dumpRouteLoader='\pushd ${BASEDIR}/dev > /dev/null && ./dumpRouteLoader.sh && \popd > /dev/null'
 alias npmr='npm run'
 
