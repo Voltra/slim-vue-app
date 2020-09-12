@@ -18,7 +18,7 @@ return [
 		"level" => Logger::DEBUG,
 	],
 	"views" => [
-		"cache" => Path::cache("views"),
+		"cache" => false,
 	],
 	"csrf" => [
 		"key" => "csrf_token",

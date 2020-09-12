@@ -1,14 +1,11 @@
-import Vue from "vue";
 import { sync } from "vuex-router-sync";
+import { Env } from "@js/utils";
 import pluginsInstaller from "./plugins";
+import Vue from "$vue";
 
-
+Vue.config.productionTip = Env.dev || Env.test;
 pluginsInstaller(Vue);
 
-/**
- *
- * @param {import("vue").ThisTypedComponent} options
- */
 const newVueInstance = options => {
 	const unsyncRouterStore = sync(
 		options.store, options.router, { moduleName: "router" }

@@ -8,7 +8,7 @@ import counter from "./modules/counter";
  */
 const store = { modules: { counter } };
 
-export default new Vuex({
+export default new Vuex.Store({
 	...store,
 	plugins: [pathify.plugin],
 });

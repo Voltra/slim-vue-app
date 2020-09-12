@@ -10,6 +10,8 @@ use Slim\Psr7\Response;
 use Slim\Psr7\StatusCode;
 use Slim\Router;
 
+//TODO: Rework to use Slim4 middlewares
+
 abstract class Filter
 {
 	/**@var Container $container*/
@@ -33,6 +35,8 @@ abstract class Filter
 		return new static(...$args);
 	}
 
+	public static function compose(string $lhs, string $rhs){}
+
 	protected abstract function isAuthorized(): bool;
 
 	protected function redirectURL(): string
@@ -48,7 +52,7 @@ abstract class Filter
 
 	public function __invoke(Request $rq, Response $res, callable $next): Response
 	{
-		if (!$this->isAuthorized(/*$this->container*/))
+		if (!$this->isAuthorized())
 			return $res->withRedirect($this->redirectURL(), $this->redirectStatus());
 
 		return $next($rq, $res);

@@ -17,6 +17,7 @@
 	},
 	"require": {
 		"php": ">=7.2.0",
+		"ext-json": "*",
 		"slim/slim": "^4.5",
 		"vlucas/phpdotenv": "^5.1",
 		"slim/psr7": "^1.2",
@@ -41,7 +42,7 @@
 		"paragonie/random_compat": "^2.0",
 		"paragonie/random-lib": "^2.0",
 		"bryanjhv/slim-session": "^4.1"
-	},
+    },
 	"require-dev": {
 		"phpunit/phpunit": "^9.3",
 		"php-mock/php-mock": "^2.2",

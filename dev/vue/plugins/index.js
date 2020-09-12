@@ -4,10 +4,11 @@ import indexedDb from "./indexedDB";
 import flash from "./flash";
 import json from "./json";
 import ls from "./localStorage";
+import mediaQueries from "./mediaQueries";
 
 /**
  * Installer function for the Vue plugins
- * @param {import("vue").VueConstructor} Vue
+ * @param {Vue | VueConstructor} Vue
  */
 export default function pluginsInstaller(Vue){
 	/// PLUGINS
@@ -18,6 +19,7 @@ export default function pluginsInstaller(Vue){
 		flash,
 		json,
 		ls,
+		mediaQueries,
 	];
 
 	factories.forEach(factory => factory(Vue));

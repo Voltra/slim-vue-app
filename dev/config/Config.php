@@ -24,7 +24,7 @@ class Config extends HassankhanConfig
 				"level" => Logger::ERROR,
 			],
 			"views" => [
-				"cache" => sys_get_temp_dir() . "/views",
+				"cache" => sys_get_temp_dir() . "/views", // OR Path::cache("views")
 			],
 			"csrf" => [
 				"key" => "csrf_token"

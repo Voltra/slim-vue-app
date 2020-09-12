@@ -1,0 +1,31 @@
+@use "~sass-mq" as sassMq with (
+	$mq-breakpoints: (
+		xsmall: 540,
+		small: 900,
+		medium: 1280,
+		large: 1440,
+		xlarge: 1920
+		// xxlarge: Infinity
+	)
+);
+
+/*
+	{
+		xsmall: 540, // up to 540 => xsmall
+		small: 900, // from 540 up to 900 => small
+		medium: 1280,
+		large: 1440,
+		xlarge: 1920,
+		xxlarge: Infinity,
+	}
+ */
+
+/// Add CSS from a specific breakpoint
+/// @param {keyword} $keyword - The desired breakpoint as a keyword
+/// @content The CSS to be applied when matching the specified breakpoint
+/// @see mq
+@mixin breakpoint($keyword){
+	@include sassMq.mq($from: $keyword){
+		@content;
+	}
+}

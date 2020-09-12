@@ -1,11 +1,11 @@
 {
-  "demo.js": "/assets/js/js/demo.a8feec4e.bundle.js",
-  "demo.js.map": "/assets/js/js/demo.a8feec4e.bundle.js.map",
-  "img/favicons/apple-touch-icon.png": "/assets/js/img/favicons/apple-touch-icon.png",
-  "img/favicons/favicon-16x16.png": "/assets/js/img/favicons/favicon-16x16.png",
-  "img/favicons/favicon-32x32.png": "/assets/js/img/favicons/favicon-32x32.png",
-  "img/favicons/favicon.ico": "/assets/js/img/favicons/favicon.ico",
-  "img/favicons/favicon.ico.gz": "/assets/js/img/favicons/favicon.ico.gz",
-  "js/demo.a8feec4e.bundle.js.gz": "/assets/js/js/demo.a8feec4e.bundle.js.gz",
-  "js/demo.a8feec4e.bundle.js.map.gz": "/assets/js/js/demo.a8feec4e.bundle.js.map.gz"
+  "demo.css": "/assets/css/demo.css",
+  "demo.js": "/assets/js/demo.bundle.js",
+  "css/demo.css.gz": "/assets/css/demo.css.gz",
+  "img/favicons/apple-touch-icon.png": "/assets/img/favicons/apple-touch-icon.png",
+  "img/favicons/favicon-16x16.png": "/assets/img/favicons/favicon-16x16.png",
+  "img/favicons/favicon-32x32.png": "/assets/img/favicons/favicon-32x32.png",
+  "img/favicons/favicon.ico": "/assets/img/favicons/favicon.ico",
+  "img/favicons/favicon.ico.gz": "/assets/img/favicons/favicon.ico.gz",
+  "js/demo.bundle.js.gz": "/assets/js/demo.bundle.js.gz"
 }

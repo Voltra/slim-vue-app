@@ -1,13 +1,22 @@
 /*eslint-env node*/
 
-
+/**
+ * @type {import("@babel/core").TransformOptions}
+ */
 module.exports = {
+	exclude: [
+		/\bcore-js\b/i,
+		/\bwebpack\b/,
+		/\bregenerator-runtime\b/,
+	],
 	presets: [
 		[
 			"@babel/preset-env",
+			/** @type {typeof import("@babel/preset-env")._default} */
 			{
 				useBuiltIns: "usage", // polyfills on use
 				corejs: 3, // use core-js@3
+				modules: "umd",
 			},
 		],
 		[
@@ -31,8 +40,8 @@ module.exports = {
 		"@babel/plugin-proposal-throw-expressions", // onError(() => throw new TypeError("OnO"));
 		[
 			"@babel/plugin-proposal-pipeline-operator", { // '1' |> parseFloat |> timesTwo |> plusFourty
-				proposal: "fsharp",
-			},
+			proposal: "fsharp",
+		},
 		],
 		"@babel/plugin-proposal-partial-application", // doStuff(?, 42) is the new (x => doStuff(x, 42))
 		"@babel/plugin-syntax-dynamic-import", // import("myComponent.vue").then(...)

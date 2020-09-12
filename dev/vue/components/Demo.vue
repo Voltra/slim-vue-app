@@ -5,13 +5,12 @@
 </template>
 
 <script>
+	import VueTypes from "vue-types"
+
 	export default {
 		name: "demo",
         props: {
-			str: {
-				type: String,
-                required: true
-            }
+			str: VueTypes.string.isRequired,
         }
 	}
 </script>

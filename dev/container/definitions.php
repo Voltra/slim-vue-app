@@ -65,8 +65,13 @@ return [
 
 		$view->addExtension(new FlashExtension($flash));
 		$view->addExtension(new CsrfExtension($container));
-		$view->addExtension(new PathExtension());
+		$view->addExtension(new PathExtension($container));
 		return $view;
+	},
+	"manifest" => static function(Container $container){
+		$fs = $container->get(\Illuminate\Filesystem\Filesystem::class);
+		$rawJson = $fs->get(Path::assets("/manifest.json"));
+		return json_decode($rawJson, true);
 	},
 
 	/******************************************************************************************************************\
@@ -89,4 +94,21 @@ return [
 	\App\Actions\Cookies::class,
 	\App\Actions\Csrf::class,
 	\App\Actions\Auth::class,
+
+
+
+	/******************************************************************************************************************\
+	 * Filters
+	\******************************************************************************************************************/
+	\App\Filters\VisitorFilter::class,
+	\App\Filters\UserFilter::class,
+	\App\Filters\LogoutFilter::class,
+	\App\Filters\AdminFilter::class,
+
+
+
+	/******************************************************************************************************************\
+	 * Utils
+	\******************************************************************************************************************/
+	\Illuminate\Filesystem\Filesystem::class
 ]);

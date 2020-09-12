@@ -1,0 +1,16 @@
+@import "~@scss/libraries/hamburger";
+
+.hamburger{
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 20;
+
+	display: block;
+	outline: none;
+
+	opacity: 0.9;
+	&:hover{
+		opacity: 1;
+	}
+}

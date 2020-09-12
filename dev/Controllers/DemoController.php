@@ -18,7 +18,8 @@ class DemoController extends Controller
 	 * @throws \Twig\Error\RuntimeError
 	 * @throws \Twig\Error\SyntaxError
 	 */
-	public function home(Request $request, Response $response){
+	public function home(Response $response, Request $request){
+		// thx to the PHP-DI bridge, we can inject arguments however we want
 		return $this->view->render($response, "demo.twig", [
 			"phpver" => phpversion()
 		]);
@@ -35,8 +36,9 @@ class DemoController extends Controller
 	 * @throws \Twig\Error\SyntaxError
 	 */
 	public function user(Request $request, Response $response, string $user){
+		// $user is the {user} route parameter
 		return $this->view->render($response, "demo2.twig", [
-			"user" => $user, // $args["user"]
+			"user" => $user,
 		]);
 	}
 

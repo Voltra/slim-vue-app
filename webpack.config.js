@@ -6,6 +6,7 @@
 //// IMPORTS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const path = require("path");
+const webpack = require("webpack");
 const DotEnvPlugin = require("dotenv-webpack");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -14,7 +15,7 @@ const WebpackProgessBar = require("webpack-progress-bar");
 const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
-// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const dotenvExpand = require("dotenv-expand");
 const envResult = require("dotenv-safe").config();
 
@@ -30,6 +31,9 @@ if(envResult.error)
 const mode = process.env.NODE_ENV;
 const dev = (mode === "development");
 
+/**
+ * @type {import("webpack").webpack.Configuration}
+ */
 const config = {
 	mode,
 	resolve: {
@@ -63,13 +67,13 @@ alias["@"] = here("dev/");
 alias["@js"] = here("dev/js/");
 alias["@tests"] = here("dev/js/tests/");
 alias["@e2e"] = here("dev/js/e2e/");
-
-// alias["@vue"] = here("dev/vue/");
 alias["@components"] = here("dev/vue/components/");
 alias["@vplugins"] = here("dev/vue/plugins/");
-
 alias["@css"] = here("dev/sass/");
+alias["@scss"] = here("dev/sass/");
 alias["@img"] = here("dev/resources/img/");
+
+alias.$vue = "vue/dist/vue.esm";
 
 extensions.push(
 	".js",
@@ -92,16 +96,15 @@ config.entry.demo = "@js/mainDemo.js";
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const { output } = config;
 output.path = here("public_html/assets/");
-output.filename = `js/[name].${dev ? "[chunkhash:8]." : ""}bundle.js`;
-output.publicPath = "/assets/js/";
-
+output.filename = `js/[name].bundle.js`; // ${dev ? "" : "[chunkhash:8]."}
+output.publicPath = "/assets/";
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //// DEV TOOLS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 config.stats = "minimal"; // compatibility w/ friendly errors plugin
-config.devtool = dev ? "source-map" : false;
+config.devtool = dev ? "eval-cheap-module-source-map" : "source-map";
 
 
 
@@ -156,10 +159,10 @@ rules.push({
 rules.push({
 	test: /\.s[ac]ss$/i,
 	use: [
-		/* {
+		{
 			loader: MiniCssExtractPlugin.loader,
 			options: {},
-		}, */
+		},
 		{
 			loader: "css-loader",
 			options: {
@@ -187,7 +190,14 @@ rules.push({
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const { plugins } = config;
 
-plugins.push(new DotEnvPlugin());
+plugins.push(new DotEnvPlugin({
+	safe: true,
+	expand: true,
+	allowEmptyValues: false,
+	systemvars: false,
+}));
+
+plugins.push(new webpack.DefinePlugin({"process.env": JSON.stringify(envResult.parsed)}));
 
 plugins.push(new WebpackProgessBar());
 
@@ -196,6 +206,11 @@ plugins.push(new FriendlyErrorsWebpackPlugin({}));
 plugins.push(new CompressionPlugin());
 
 plugins.push(new VueLoaderPlugin());
+
+plugins.push(new MiniCssExtractPlugin({
+	filename: `css/[name].css`,
+	chunkFilename: "css/[id].css",
+}));
 
 plugins.push(new FaviconsWebpackPlugin({
 	logo: here("dev/resources/favicon.png"),
