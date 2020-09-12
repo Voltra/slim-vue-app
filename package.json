@@ -42,6 +42,7 @@
 		"@babel/plugin-syntax-jsx": "^7.10.4",
 		"@babel/preset-env": "^7.11.5",
 		"@babel/types": "^7.11.5",
+		"@cypress/webpack-preprocessor": "^5.4.5",
 		"@types/jest": "^26.0.13",
 		"@vue/babel-preset-jsx": "^1.1.2",
 		"autoprefixer": "^9.8.6",

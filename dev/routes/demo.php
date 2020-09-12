@@ -1,9 +1,11 @@
 <?php
-use Slim\Http\Request;
-use Slim\Http\Response;
 
-$app->get("/", function(Request $rq, Response $response){
-    return $this->view->render($response, "demo.twig", [
-        "phpver" => phpversion()
-    ]);
-});
+use App\Helpers\Routing;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+
+/**
+ * @var Slim\App $app
+ */
+
+$app->get("/", Routing::cm(\App\Controllers\DemoController::class, "home"));

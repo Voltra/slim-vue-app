@@ -1,7 +1,7 @@
 dev/js/e2e/screenshots/
 dev/js/e2e/videos/
 
-
+logs/
 bkp/
 tmp/
 .idea/

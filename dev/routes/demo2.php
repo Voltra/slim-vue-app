@@ -1,10 +1,11 @@
 <?php
 
-use Slim\Http\Request;
-use Slim\Http\Response;
+use App\Helpers\Routing;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
-$app->get("/user/{user}", function(Request $rq, Response $response, array $args){
-    return $this->view->render($response, "demo2.twig", [
-        "user" => $args["user"]
-    ]);
-});
+/**
+ * @var Slim\App $app
+ */
+
+$app->get("/user/{user}", Routing::cm(\App\Controllers\DemoController::class, "user"));

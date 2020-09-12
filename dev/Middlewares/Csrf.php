@@ -1,39 +1,45 @@
 <?php
+
 namespace App\Middlewares;
 
 use App\Exceptions\CsrfTokenMismatch;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Slim\Container;
+use DI\Container;
 use App\Actions\Csrf as CsrfAction;
-use Slim\Http\Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Csrf extends Middleware {
+class Csrf extends Middleware
+{
 	/**@var CsrfAction $csrf*/
 	protected $csrf;
 
 	protected const METHODS = ["POST", "PUT", "DELETE"];
 
-	public function __construct(Container $container) {
+	public function __construct(Container $container)
+	{
 		parent::__construct($container);
 		$this->csrf = $container->get(CsrfAction::class);
 	}
 
-	public function process(ServerRequestInterface $rq, Response $res, callable $next): ResponseInterface{
+	public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
+	{
 		$this->csrf->ensureHasToken();
 		$key = $this->csrf->formKey();
 
-		if(in_array($rq->getMethod(), static::METHODS)){
-			$params = $rq->getParsedBody();
+		if (in_array($req->getMethod(), static::METHODS)) {
+			$params = $req->getParsedBody();
 			$submittedToken = $params[$key] ?? "";
 
-			if(!$this->csrf->isValid($submittedToken))
+			if (!$this->csrf->isValid($submittedToken))
 				throw new CsrfTokenMismatch();
 		}
 
-		$this->container->view["csrf_key"] = $key;
-		$this->container->view["csrf_token"] = $this->csrf->getToken();
+		$view = $this->container->get("view");
+		$view["csrf_key"] = $key;
+		$view["csrf_token"] = $this->csrf->getToken();
 
-		return $next($rq, $res);
+		$rawResponse = $handler->handle($req);
+		return $this->responseUpgrader->upgrade($rawResponse);
 	}
 }
