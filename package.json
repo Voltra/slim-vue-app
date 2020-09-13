@@ -14,7 +14,7 @@
 		"test:js": "npm run test:unit:js && npm run test:e2e",
 		"test:unit:js": "jest --colors",
 		"test:e2e": "cypress run",
-		"setup:routes": "source aliases.sh && dumpRouteLoader",
+		"setup:routes": "source aliases.sh && pushd dev && ./dumpRouteLoader.sh && popd",
 		"setup:cli": "dbmate -h || go get -u github.com/amacneil/dbmate",
 		"setup:php": "composer update && composer dump-autoload",
 		"setup:js": "npm i && npm audit fix"
