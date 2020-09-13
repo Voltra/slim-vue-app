@@ -1,5 +1,7 @@
 # SLIM-VUE-APP
-A ready-to-start project setup for the use of Slim 3, Vue and Twig.
+A ready-to-start project setup for the use of Slim 4, Vue and Twig.
+
+Discover the setup for yourself to see all the nice things available to you (a short description below).
 
 
 
@@ -8,17 +10,17 @@ A ready-to-start project setup for the use of Slim 3, Vue and Twig.
 The following items are required in order to take advantage of this starter project :
 
 * a bash-like environment (e.g. Git for Windows)
-* [PHP >= 7.1.1](http://php.net/downloads.php#v7.1.26)
+* [PHP >= 7.2.0](https://www.php.net/downloads.php#v7.2.33)
 * [Composer](https://getcomposer.org/download/) installed globally (available from the command-line)
-* [Node >= 8](https://nodejs.org/en/download/)
+* [Node >= 10.13.0](https://nodejs.org/en/download/)
 * [NPM >= 6](https://nodejs.org/en/download/)
-* [DBMate](https://github.com/turnitin/dbmate) (and therefore [go](https://golang.org/))
+* [DBMate](https://github.com/amacneil/dbmate) (and therefore [go](https://golang.org/))
 
 
 
 ## Setup
 
-First and foremost, `clone` (or `init` from) [this repo](https://github.com/Voltra/slim-vue-app.git).
+First and foremost, `clone` (or `init` from) [this repo](https://github.com/Voltra/slim-vue-app.git). You can also use the [project template feature from Github](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
 
 In order to have a complete setup of your development environment, run :
 
@@ -38,7 +40,7 @@ source aliases.sh
 
 
 
-The you will have to write your own `.env` file (see `.env.example`).
+Then you will have to write your own `.env` file (see `.env.example`).
 
 Then run :
 
@@ -57,7 +59,11 @@ It will create the DB (if needed) and apply all migrations.
 A lot of NPM scripts to do various tasks such as :
 
 * run tests independently
-* run all tests
+    * `npm run test:php`
+    * `npm run test:js`
+        * `npm run test:e2e`
+        * `npm run test:unit:js`
+* run all tests (`npm run test`)
 * install the CLI tools
 * etc..
 
@@ -77,10 +83,11 @@ Because it uses composer, you have access to the whole variety of PHP libraries 
 
 It comes with the following :
 
-* [Slim 3](https://packagist.org/packages/slim/slim)
+* [Slim 4](https://packagist.org/packages/slim/slim) which brings a lot of weird changes (thanks PSR15)
 * [Twig](https://packagist.org/packages/slim/twig-view)
 * [Laravel's DB component](https://packagist.org/packages/illuminate/database)
 * [Laravel's pagination component](https://packagist.org/packages/illuminate/pagination)
+* [PHP-DI](https://packagist.org/packages/php-di/php-di) which brings a lot of restriction due to PSR11
 * [Hassankhan's config](https://packagist.org/packages/hassankhan/config)
 * [A secure random (rng) library](https://packagist.org/packages/paragonie/random-lib)
 * [Session tools](https://packagist.org/packages/bryanjhv/slim-session)
@@ -136,7 +143,7 @@ This starter project provides the following :
 * [Vue](https://www.npmjs.com/package/vue)
 * [Sass](https://www.npmjs.com/package/node-sass)
 * [Jest](https://www.npmjs.com/package/jest)
-* [Nightwatch](https://www.npmjs.com/package/nightwatch)
+* [Cypress](https://www.npmjs.com/package/cypress)
 * Useful bonus libraries
 
 
@@ -161,6 +168,7 @@ Everything has been setup to use Vue+JSX+JS+ES6 (and onward) including a few plu
 * transform function bind
 * transform vue jsx
 * helper vue jsx merge props
+* etc...
 
 
 
@@ -186,9 +194,9 @@ Unit tests have configured to run on a Node environment with the correct files a
 
 
 
-#### Nightwatch
+#### Cypress
 
-E2E testing has grown more popular and is a very useful tool to ensure that every piece of functionality has been thoroughly and properly tested. It comes with the geckodriver for firefox as well as the Selenium JAR. This might be subject to change in the future.
+E2E testing has grown more popular and is a very useful tool to ensure that every piece of functionality has been thoroughly and properly tested.
 
 
 
