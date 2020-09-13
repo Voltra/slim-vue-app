@@ -10,7 +10,7 @@
 		"build": "webpack",
 		"watch": "webpack --watch",
 		"setup": "npm run setup:cli && npm run setup:js && npm run setup:php && npm run setup:routes",
-		"test:php": "punit",
+		"test:php": "./vendor/bin/phpunit --testdox",
 		"test:js": "npm run test:unit:js && npm run test:e2e",
 		"test:unit:js": "jest --colors",
 		"test:e2e": "cypress run",
