@@ -15,9 +15,9 @@
 		"test:unit:js": "jest --colors",
 		"test:e2e": "cypress run",
 		"setup:routes": "source aliases.sh && dumpRouteLoader",
-		"setup:cli": "go get -u github.com/amacneil/dbmate",
+		"setup:cli": "dbmate -h || go get -u github.com/amacneil/dbmate",
 		"setup:php": "composer update && composer dump-autoload",
-		"setup:js": "npm i"
+		"setup:js": "npm i && npm audit fix"
 	},
 	"author": "Voltra <ludwig.guerin.98@gmx.fr>",
 	"license": "MIT",
