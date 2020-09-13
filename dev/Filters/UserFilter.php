@@ -14,6 +14,6 @@ class UserFilter extends Filter
 
 	protected function redirectURL(): string
 	{
-		return $this->router->pathFor("login");
+		return $this->router->urlFor("login");
 	}
 }

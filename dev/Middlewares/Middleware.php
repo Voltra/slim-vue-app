@@ -4,17 +4,15 @@ namespace App\Middlewares;
 
 
 use App\Actions\Response as ResponseUpgrader;
-use Middlewares\Utils\RequestHandler;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use DI\Container;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Slim\Psr7\Response;
 
 abstract class Middleware implements MiddlewareInterface
 {
-	/**@var Container $container*/
+	/**@var ContainerInterface $container*/
 	protected $container;
 
 	/**
@@ -34,7 +32,7 @@ abstract class Middleware implements MiddlewareInterface
 		return new static(...$args);
 	}
 
-	public function __construct(Container $container)
+	public function __construct(ContainerInterface $container)
 	{
 		$this->container = $container;
 		$this->responseUpgrader = $container->get(ResponseUpgrader::class);

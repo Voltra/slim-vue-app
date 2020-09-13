@@ -4,20 +4,21 @@ namespace App\Filters;
 
 
 use App\Actions\Auth;
+use App\Middlewares\Middleware;
+use Lukasoppermann\Httpstatus\Httpstatuscodes;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use Slim\Psr7\StatusCode;
-use Slim\Router;
 
 //TODO: Rework to use Slim4 middlewares
 
-abstract class Filter
+abstract class Filter extends Middleware
 {
-	/**@var Container $container*/
-	protected $container;
-
-	/**@var Router $router*/
+	/**@var RouteParserInterface $router*/
 	protected $router;
 
 	/**@var Auth $auth*/
@@ -25,7 +26,7 @@ abstract class Filter
 
 	public function __construct(ContainerInterface $c)
 	{
-		$this->container = $c;
+		parent::__construct($c);
 		$this->router = $c->get("router");
 		$this->auth = $c->get(Auth::class);
 	}
@@ -41,21 +42,27 @@ abstract class Filter
 
 	protected function redirectURL(): string
 	{
-		return $this->router->pathFor("home");
+		return $this->router->urlFor("home");
 	}
 
 	protected function redirectStatus(): int
 	{
-		//		return StatusCode::HTTP_FORBIDDEN;
-		return StatusCode::HTTP_TEMPORARY_REDIRECT;
+		//		return Httpstatuscodes::HTTP_FORBIDDEN;
+		return Httpstatuscodes::HTTP_TEMPORARY_REDIRECT;
 	}
 
-	public function __invoke(Request $rq, Response $res, callable $next): Response
+	public function process(ServerRequestInterface $req, RequestHandlerInterface $handler): ResponseInterface
 	{
-		if (!$this->isAuthorized())
-			return $res->withRedirect($this->redirectURL(), $this->redirectStatus());
+		if (!$this->isAuthorized()) {
+			$res = new Response();
+			return $this->responseUpgrader->redirect(
+				$res,
+				$this->redirectURL(),
+				$this->redirectStatus()
+			);
+		}
 
-		return $next($rq, $res);
+		return $handler->handle($req);
 	}
 
 	public function composeWith(Filter $rhs): ComposedFilter

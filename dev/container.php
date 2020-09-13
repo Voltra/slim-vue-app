@@ -12,4 +12,16 @@ $builder->useAutowiring(true)
 
 $container = $builder->build();
 
+/**
+ * Resolve a dependency using the DI container
+ * @param string $key
+ * @return mixed
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
+ */
+function resolve(string $key){
+	global $container;
+	return $container->get($key);
+}
+
 return $container;

@@ -73,6 +73,12 @@ return [
 		$rawJson = $fs->get(Path::assets("/manifest.json"));
 		return json_decode($rawJson, true);
 	},
+	"router" => static function(Container $container){
+		$app = $container->get(\Slim\App::class);
+		return $app->getRouteCollector()->getRouteParser();
+	},
+
+
 
 	/******************************************************************************************************************\
 	 * Via class strings

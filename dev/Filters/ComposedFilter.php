@@ -54,3 +54,28 @@ class ComposedFilter extends Filter{
 		return $this->rhs->redirectStatus();
 	}
 }
+
+/**
+ * Compose a series of filters (left associative)
+ * @param string[] $filterClasses - The class names of the filters to compose (will be resolved via the DI container)
+ * @return ComposedFilter|Filter
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
+ */
+function composeFilters($filterClasses){
+	/**
+	 * @var Filter $composedFilter
+	 */
+	$composedFilter = resolve($filterClasses[0]);
+
+	for($i = 1, $length = count($filterClasses) ; $i < $length ; ++$i){
+		/**
+		 * @var Filter $filter
+		 */
+		$filter = resolve($filterClasses[$i]);
+
+		$composedFilter = $composedFilter->composeWith($filter);
+	}
+
+	return $composedFilter;
+}
