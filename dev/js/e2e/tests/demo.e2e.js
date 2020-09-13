@@ -3,6 +3,6 @@
 
 describe("My Demo Test", () => {
 	it("Does stuff I guess", () => {
-		expect(true).to.be(true);
+		expect(true).to.eq(true);
 	});
 });

@@ -69,8 +69,8 @@ alias["@tests"] = here("dev/js/tests/");
 alias["@e2e"] = here("dev/js/e2e/");
 alias["@components"] = here("dev/vue/components/");
 alias["@vplugins"] = here("dev/vue/plugins/");
-alias["@css"] = here("dev/sass/");
-alias["@scss"] = here("dev/sass/");
+alias["@css"] = here("dev/scss/");
+alias["@scss"] = here("dev/scss/");
 alias["@img"] = here("dev/resources/img/");
 
 alias.$vue = "vue/dist/vue.esm";
@@ -172,7 +172,7 @@ rules.push({
 		},
 		"postcss-loader",
 		{
-			loader: "sass-loader",
+			loader: "scss-loader",
 			options: { sourceMap: true },
 		},
 	],
