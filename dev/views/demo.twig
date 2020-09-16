@@ -1,12 +1,17 @@
 {% extends layout() %}
 
-{% block title %} Homepage {% endblock %}
+{% block title %}Homepage{% endblock %}
+
+{% block css %}
+	<link rel="stylesheet" href="{{ fromManifest('demo.css') }}"/>
+{% endblock %}
 
 {% block js %}
-	<script src="/assets/js/demo.bundle.js"></script>
+	<script defer src="{{ fromManifest('demo.js') }}"></script>
 {% endblock %}
 
 {% block body %}
+	<hamburger v-model="menuOpened"></hamburger>
 	Hello World!<br/>
 	This is a demo page <br/>
 	{{ phpver }} <br/>

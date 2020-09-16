@@ -1,33 +1,16 @@
 <?php
 require_once "../vendor/autoload.php";
-
-use App\Helpers\Path;
-use Slim\App as SlimApp;
-use Slim\Middleware\Session as SlimSession;
-use Zeuxisoo\Whoops\Provider\Slim\WhoopsMiddleware;
-
-
 require_once "env.php";
-$config = require_once("config.php");
-$db = require_once("db.php");
 
-$app = new SlimApp([
-	"config" => $config,
-	"settings" => $config["settings"]
-]);
-$container = $app->getContainer();
+$container = require("container.php");
+$config = $container->get("config");
+$settings = $container->get("settings");
+$db = (require_once("db.php"))($config);
 
-session_start();
-foreach(require_once(Path::dev("/container/actions.php")) as $class => $factory)
-	$container[$class] = $factory;
+$app = \DI\Bridge\Slim\Bridge::create($container);
+$container->set(\Slim\App::class, $app);
 
-foreach(["session", "flash", "view"] as $item)
-	$container[$item] = require_once(Path::dev("/container/{$item}.php"));
-
-$app->add(new WhoopsMiddleware($app))
-	->add(new SlimSession($config["session"]))
-	->add(App\Middlewares\Csrf::from($container))
-	->add(App\Middlewares\Auth::from($container));
+(require_once("middlewares.php"))($app, $container, $config, $settings);
 
 require_once "route_autoload.php";
 

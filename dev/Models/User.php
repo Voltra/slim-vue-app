@@ -22,8 +22,10 @@ class User extends Model{
 	}
 
 	public function permissions(){
-		return $this->roles()->flatMap(function(Role $role){
-			return $role->permissions();
+		return $this->roles()->with("permission")
+		->cursor()
+		->flatMap(function(Role $role){
+			return $role->permissions;
 		})->uniqueStrict(function(Permission $permission){
 			return $permission->id;
 		});
@@ -62,7 +64,7 @@ class User extends Model{
 
 	public function resetRemember(): bool{
 		if($this->hasRemember())
-			return $this->remember->reset();
+			return $this->remember()->first()->reset();
 		return true;
 	}
 

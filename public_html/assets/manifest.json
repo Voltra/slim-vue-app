@@ -1,0 +1,11 @@
+{
+  "demo.css": "/assets/css/demo.css",
+  "demo.js": "/assets/js/demo.bundle.js",
+  "css/demo.css.gz": "/assets/css/demo.css.gz",
+  "img/favicons/apple-touch-icon.png": "/assets/img/favicons/apple-touch-icon.png",
+  "img/favicons/favicon-16x16.png": "/assets/img/favicons/favicon-16x16.png",
+  "img/favicons/favicon-32x32.png": "/assets/img/favicons/favicon-32x32.png",
+  "img/favicons/favicon.ico": "/assets/img/favicons/favicon.ico",
+  "img/favicons/favicon.ico.gz": "/assets/img/favicons/favicon.ico.gz",
+  "js/demo.bundle.js.gz": "/assets/js/demo.bundle.js.gz"
+}

@@ -1,0 +1,4 @@
+defaults
+not IE_Mob 11
+not dead
+last 4 versions

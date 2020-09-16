@@ -8,7 +8,5 @@ CREATE TABLE user_remember(
 	updated_at timestamp,
 	FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
 -- migrate:down
 DROP TABLE user_remember;
-

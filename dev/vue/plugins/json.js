@@ -1,16 +1,14 @@
-import { $json } from "@voltra/json"
+import { $json } from "@voltra/json";
 
-const plugin = {
-	install(Vue){
-		Object.defineProperties(Vue.prototype, {
-			"$json": {
-				get() { return $json; }
-			}
-		})
-	}
-};
-
-if(typeof window != "undefined" && window.Vue)
-	Vue.use(plugin);
-
-export default plugin;
+/**
+ * @param {import("vue").VueConstructor} Vue
+ */
+export default function json(Vue){
+	Object.defineProperties(Vue.prototype, {
+		$json: {
+			get(){
+				return $json;
+			},
+		},
+	});
+}

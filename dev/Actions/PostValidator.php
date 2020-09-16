@@ -1,33 +1,38 @@
 <?php
+
 namespace App\Actions;
 
-use Slim\Container;
+use DI\Container;
 
-class PostValidator extends Action{
+class PostValidator extends Action
+{
 	/**@var array $post*/
 	protected $post;
 
-	public function __construct(Container $container) {
+	public function __construct(Container $container)
+	{
 		parent::__construct($container);
-		$this->post = $container->request->getParsedBody();
+		$this->post = $container->get("request")->getParsedBody();
 	}
 
 
-	public function required(array $keys): bool{
+	public function required(array $keys): bool
+	{
 		return !array_diff_key(array_flip($keys), $this->post);
 	}
 
-	public function getAll(array $cfg): array{
+	public function getAll(array $cfg): array
+	{
 		$ret = [];
-		foreach($cfg as $key => $uconfig){
+		foreach ($cfg as $key => $uconfig) {
 			$default = ["type" => "string", "default" => ""];
 			$config = array_merge($default, $uconfig);
 
 			$value = !array_key_exists($key, $this->post)
-			? $config["default"]
-			: $this->post[$key];
+				? $config["default"]
+				: $this->post[$key];
 
-			switch ($config["type"]){
+			switch ($config["type"]) {
 				case "bool":
 					$value = (bool)$value;
 					break;
@@ -50,14 +55,15 @@ class PostValidator extends Action{
 		return $ret;
 	}
 
-	public function getOrDefault(string $key, $default){
-		if(array_key_exists($key, $this->post))
+	public function getOrDefault(string $key, $default)
+	{
+		if (array_key_exists($key, $this->post))
 			return $this->post[$key];
 		return $default;
 	}
 
-	public function payload(): array{
+	public function payload(): array
+	{
 		return $this->post;
 	}
-
 }

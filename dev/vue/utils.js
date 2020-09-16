@@ -5,6 +5,4 @@
  */
 const lazyc = path => () => import(`@components/${path}.vue`);
 
-export {
-	lazyc,
-}
+export { lazyc };

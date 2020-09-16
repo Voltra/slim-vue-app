@@ -1,0 +1,12 @@
+bkp/
+public_html/
+vendor/
+dev/js/tests/
+dev/js/e2e/
+
+node_modules/
+eslint-rules/
+templates/
+dist/
+./*
+!./src/*

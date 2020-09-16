@@ -1,3 +1,9 @@
+dev/js/e2e/screenshots/
+dev/js/e2e/videos/
+
+logs/
+bkp/
+tmp/
 .idea/
 .vscode/
 vendor/
@@ -9,6 +15,11 @@ composer.lock
 route_autoload.php
 .brackets.json
 schema.sql
+yarn.lock
+.phpunit*
+
+
+
 
 # Logs
 logs

@@ -6,6 +6,8 @@
 		<meta name="tags" content="{% block tags %}{% endblock %}"/>
 		<title>{% block title %}{% endblock %}</title>
 
+		{% include module("favicons") %}
+
 		{% include module("globalCSS") %}
 		{% block css %}{% endblock %}
 

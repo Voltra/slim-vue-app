@@ -1,0 +1,183 @@
+$defaultRadius: 50vw;
+
+// ╔ ╗ ╚ ╝ ┌ ┐ └ ┘
+
+@mixin radius($value: $defaultRadius) {
+	/*
+	╔ ╗
+
+	╚ ╝
+	*/
+	border-radius: $defaultRadius;
+}
+
+@mixin noRadius {
+	/*
+	┌ ┐
+
+	└ ┘
+	*/
+	@include radius(0);
+}
+
+////
+
+@mixin radiusTR($value: $defaultRadius) {
+	/*
+	┌ ╗
+
+	└ ┘
+	*/
+	border-top-right-radius: $value;
+}
+
+@mixin radiusTL($value: $defaultRadius) {
+	/*
+	╔ ┐
+
+	└ ┘
+	*/
+	border-top-left-radius: $value;
+}
+
+@mixin radiusBR($value: $defaultRadius) {
+	/*
+	┌ ┐
+
+	└ ╝
+	*/
+	border-bottom-right-radius: $value;
+}
+
+@mixin radiusBL($value: $defaultRadius) {
+	/*
+	┌ ┐
+
+	╚ ┘
+	*/
+	border-bottom-left-radius: $value;
+}
+
+////
+
+@mixin radiusTop($value: $defaultRadius) {
+	/*
+	╔ ╗
+
+	└ ┘
+	*/
+	@include radiusTL($value);
+	@include radiusTR($value);
+}
+
+@mixin radiusRight($value: $defaultRadius) {
+	/*
+	┌ ╗
+
+	└ ╝
+	*/
+	@include radiusTR($value);
+	@include radiusBR($value);
+}
+
+@mixin radiusBottom($value: $defaultRadius) {
+	/*
+	┌ ┐
+
+	╚ ╝
+	*/
+	@include radiusBL($value);
+	@include radiusBR($value);
+}
+
+@mixin radiusLeft($value: $defaultRadius) {
+	/*
+	╔ ┐
+
+	╚ ┘
+	*/
+	@include radiusTL($value);
+	@include radiusBL($value);
+}
+
+////
+
+@mixin radiusDiagTL($value: $defaultRadius) {
+	/*
+	╔ ┐
+
+	└ ╝
+	*/
+	@include radiusTL($value);
+	@include radiusBR($value);
+}
+
+@mixin radiusDiagBR($value: $defaultRadius) {
+	/*
+	╔ ┐
+
+	└ ╝
+	*/
+	@include radiusDiagTL($value);
+}
+
+@mixin radiusDiagTR($value: $defaultRadius) {
+	/*
+	┌ ╗
+
+	╚ ┘
+	*/
+	@include radiusTR($value);
+	@include radiusBL($value);
+}
+
+@mixin radiusDiagBL($value: $defaultRadius) {
+	/*
+	┌ ╗
+
+	╚ ┘
+	*/
+	@include radiusDiagTR($value);
+}
+
+///
+
+@mixin radiusAllButTR($value: $defaultRadius) {
+	/*
+	╔ ┐
+
+	╚ ╝
+	*/
+	@include radiusLeft($value);
+	@include radiusBR($value);
+}
+
+@mixin radiusAllButTL($value: $defaultRadius) {
+	/*
+	┌ ╗
+
+	╚ ╝
+	*/
+	@include radiusRight($value);
+	@include radiusBL($value);
+}
+
+@mixin radiusAllButBR($value: $defaultRadius) {
+	/*
+	╔ ╗
+
+	╚ ┘
+	*/
+	@include radiusLeft($value);
+	@include radiusTR($value);
+}
+
+@mixin radiusAllButBL($value: $defaultRadius) {
+	/*
+	╔ ╗
+
+	└ ╝
+	*/
+	@include radiusRight($value);
+	@include radiusBR($value);
+}

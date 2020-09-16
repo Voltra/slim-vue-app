@@ -1,0 +1,55 @@
+$defaultPadding: 0 !default;
+
+@mixin verticalPadding($value: $defaultPadding) {
+	padding-top: $value;
+	padding-bottom: $value;
+}
+
+@mixin horizontalPadding($value: $defaultPadding) {
+	padding-left: $value;
+	padding-right: $value;
+}
+
+////
+
+@mixin paddingTR($value: $defaultPadding) {
+	padding-top: $value;
+	padding-right: $value;
+}
+
+@mixin paddingTL($value: $defaultPadding) {
+	padding-top: $value;
+	padding-left: $value;
+}
+
+@mixin paddingBR($value: $defaultPadding) {
+	padding-bottom: $value;
+	padding-right: $value;
+}
+
+@mixin paddingBL($value: $defaultPadding) {
+	padding-bottom: $value;
+	padding-left: $value;
+}
+
+////
+
+@mixin paddingTRL($value: $defaultPadding) {
+	@include horizontalPadding($value);
+	padding-top: $value;
+}
+
+@mixin paddingRBL($value: $defaultPadding) {
+	@include horizontalPadding($value);
+	padding-bottom: $value;
+}
+
+@mixin paddingTBL($value: $defaultPadding) {
+	@include verticalPadding($value);
+	padding-left: $value;
+}
+
+@mixin paddingTRB($value: $defaultPadding) {
+	@include verticalPadding($value);
+	padding-right: $value;
+}

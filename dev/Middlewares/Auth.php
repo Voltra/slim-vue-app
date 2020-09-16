@@ -1,25 +1,32 @@
 <?php
+
 namespace App\Middlewares;
 
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use App\Actions\Auth as AuthAction;
-use Slim\Container;
-use Slim\Http\Response;
+use DI\Container;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Auth extends Middleware{
+class Auth extends Middleware
+{
 	/**@var AuthAction $auth*/
 	protected $auth;
 
-	public function __construct(Container $container, ?AuthAction $auth = null) {
+	public function __construct(Container $container, ?AuthAction $auth = null)
+	{
 		parent::__construct($container);
-//		$this->auth = $auth ?? new AuthAction($container);
 		$this->auth = $auth ?? $container->get(AuthAction::class);
 	}
 
-	public function process(ServerRequestInterface $rq, Response $res, callable $next): ResponseInterface {
-		$response = $this->auth->loginfromRemember($rq, $res)->response;
-		return $next($rq, $response);
+
+	public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
+	{
+		//TODO: Check if this still works after migrating to SlimV4 middlewares
+
+		$rawResponse = $handler->handle($req);
+		$response = $this->responseUpgrader->upgrade($rawResponse);
+		return $this->auth->loginfromRemember($req, $response)->response;
 	}
 }

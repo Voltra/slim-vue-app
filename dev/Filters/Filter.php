@@ -1,53 +1,72 @@
 <?php
+
 namespace App\Filters;
 
 
 use App\Actions\Auth;
+use App\Middlewares\Middleware;
+use Lukasoppermann\Httpstatus\Httpstatuscodes;
 use Psr\Container\ContainerInterface;
-use Slim\Http\Request;
-use Slim\Http\Response;
-use Slim\Http\StatusCode;
-use Slim\Router;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Interfaces\RouteParserInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
-abstract class Filter {
-	/**@var Container $container*/
-	protected $container;
+//TODO: Rework to use Slim4 middlewares
 
-	/**@var Router $router*/
+abstract class Filter extends Middleware
+{
+	/**@var RouteParserInterface $router*/
 	protected $router;
 
 	/**@var Auth $auth*/
 	protected $auth;
 
-	public function __construct(ContainerInterface $c) {
-		$this->container = $c;
+	public function __construct(ContainerInterface $c)
+	{
+		parent::__construct($c);
 		$this->router = $c->get("router");
 		$this->auth = $c->get(Auth::class);
 	}
 
-	public static function from(...$args){
+	public static function from(...$args)
+	{
 		return new static(...$args);
 	}
 
+	public static function compose(string $lhs, string $rhs){}
+
 	protected abstract function isAuthorized(): bool;
 
-	protected function redirectURL(): string{
-		return $this->router->pathFor("home");
+	protected function redirectURL(): string
+	{
+		return $this->router->urlFor("home");
 	}
 
-	protected function redirectStatus(): int{
-//		return StatusCode::HTTP_FORBIDDEN;
-		return StatusCode::HTTP_TEMPORARY_REDIRECT;
+	protected function redirectStatus(): int
+	{
+		//		return Httpstatuscodes::HTTP_FORBIDDEN;
+		return Httpstatuscodes::HTTP_TEMPORARY_REDIRECT;
 	}
 
-	public function __invoke(Request $rq, Response $res, callable $next): Response{
-		if(!$this->isAuthorized(/*$this->container*/))
-			return $res->withRedirect($this->redirectURL(), $this->redirectStatus());
+	public function process(ServerRequestInterface $req, RequestHandlerInterface $handler): ResponseInterface
+	{
+		if (!$this->isAuthorized()) {
+			$res = new Response();
+			return $this->responseUpgrader->redirect(
+				$res,
+				$this->redirectURL(),
+				$this->redirectStatus()
+			);
+		}
 
-		return $next($rq, $res);
+		return $handler->handle($req);
 	}
 
-	public function composeWith(Filter $rhs): ComposedFilter{
+	public function composeWith(Filter $rhs): ComposedFilter
+	{
 		return ComposedFilter::from($this->container, $this, $rhs);
 	}
 }

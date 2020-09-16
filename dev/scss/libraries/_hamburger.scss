@@ -1,0 +1,13 @@
+$hamburger-layer-color: black;
+$hamburger-types: (emphatic);
+
+$hamburger-layer-width: 40px;
+$hamburger-layer-height: 4px;
+$hamburger-layer-spacing: 1.5 * $hamburger-layer-height;
+$hamburger-layer-border-radius: $hamburger-layer-height;
+
+@import "~hamburgers/_sass/hamburgers/hamburgers";
+
+$height: (2*$hamburger-padding-y) + (3*$hamburger-layer-height) + (2*$hamburger-layer-spacing);
+$width: (2*$hamburger-padding-x) + $hamburger-layer-width;
+$padding: $hamburger-padding-y;

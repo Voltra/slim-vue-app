@@ -1,6 +1,8 @@
 <?php
+
 use App\Config\Config;
 use App\Helpers\Path;
+use Illuminate\Support\Env;
 
-$configMode = $_ENV["NODE_ENV"];
+$configMode = \App\Helpers\AppEnv::get();
 return Config::load(Path::dev("/Config/{$configMode}.php"));

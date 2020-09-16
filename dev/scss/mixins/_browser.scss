@@ -1,0 +1,32 @@
+/// Block mixin that adds styles for the given browser
+/// @param {string|keyword} $browsers - The browser(s) combination(s) to style for
+/// @content Styles that will be applied only if the browser matches the provided one
+/// @example scss - Browser mixin
+/// 	@include browser(ie){}
+/// 	// styles only IE
+///
+/// 	@include browser("desktop.windows"){}
+/// 	// styles only on desktop versions of windows
+@mixin browser($browsers...) {
+	$selector: &;
+
+	@each $b in $browsers {
+		$browser: unquote(quote($b)); // Trick to be able to pass class combos
+		/*
+		Allows:
+			browser(ie)
+			browser("ie.mobile")
+			browser("firefox.android")
+			browser(ie, "firefox.ios")
+			etc...
+		*/
+
+		@at-root {
+			html.#{$browser} {
+				#{$selector} {
+					@content;
+				}
+			}
+		}
+	}
+}
