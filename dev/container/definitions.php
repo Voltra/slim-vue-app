@@ -6,6 +6,7 @@ use App\Helpers\TwigExtensions\CsrfExtension;
 use App\Helpers\TwigExtensions\FlashExtension;
 use App\Helpers\TwigExtensions\PathExtension;
 use DI\Container;
+use Illuminate\Support\Env;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Slim\Views\Twig;
@@ -66,6 +67,9 @@ return [
 		$view->addExtension(new FlashExtension($flash));
 		$view->addExtension(new CsrfExtension($container));
 		$view->addExtension(new PathExtension($container));
+		if(Env::get("PHP_ENV", "production") === "development")
+			$view->addExtension(new \Twig\Extension\DebugExtension());
+
 		return $view;
 	},
 	"manifest" => static function(Container $container){

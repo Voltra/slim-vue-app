@@ -172,7 +172,7 @@ rules.push({
 		},
 		"postcss-loader",
 		{
-			loader: "scss-loader",
+			loader: "sass-loader",
 			options: { sourceMap: true },
 		},
 	],

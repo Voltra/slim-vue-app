@@ -2,6 +2,7 @@
 
 use App\Filters\VisitorFilter;
 use App\Helpers\Routing;
+use App\Models\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use function App\Filters\composeFilters;

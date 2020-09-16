@@ -19,6 +19,7 @@ return [
 	],
 	"views" => [
 		"cache" => false,
+		"debug" => true,
 	],
 	"csrf" => [
 		"key" => "csrf_token",
