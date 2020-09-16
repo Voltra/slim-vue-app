@@ -4,5 +4,5 @@ use App\Config\Config;
 use App\Helpers\Path;
 use Illuminate\Support\Env;
 
-$configMode = Env::get("PHP_ENV", "production");
+$configMode = \App\Helpers\AppEnv::get();
 return Config::load(Path::dev("/Config/{$configMode}.php"));
