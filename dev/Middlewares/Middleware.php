@@ -4,6 +4,7 @@ namespace App\Middlewares;
 
 
 use App\Actions\Response as ResponseUpgrader;
+use App\Config\Config;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -19,6 +20,16 @@ abstract class Middleware implements MiddlewareInterface
 	 * @var ResponseUpgrader $responseUpgrader
 	 */
 	protected $responseUpgrader;
+
+	/**
+	 * @var Config
+	 */
+	protected $config;
+
+	/**
+	 * @var array $settings
+	 */
+	protected $settings;
 
 	public function __invoke(Request $req, RequestHandlerInterface $handler): ResponseInterface
 	{
@@ -36,5 +47,8 @@ abstract class Middleware implements MiddlewareInterface
 	{
 		$this->container = $container;
 		$this->responseUpgrader = $container->get(ResponseUpgrader::class);
+
+		$this->config = $container->get(Config::class);
+		$this->settings = $container->get("settings");
 	}
 }

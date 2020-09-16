@@ -88,6 +88,7 @@ return [
 	},
 	\Psr\Log\LoggerInterface::class => \DI\get("logger"),
 	Twig::class => \DI\get("view"),
+	Config::class => \DI\get("config"),
 ] + autowired([
 	/******************************************************************************************************************\
 	 * Actions

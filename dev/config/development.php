@@ -57,4 +57,10 @@ return [
 		"collation" => "utf8_unicode_ci",
 		"prefix" => "",
 	],
+	"viewModelBinding" => [
+		"user" => [
+			"model" => \App\Models\User::class,
+			"column" => "username",
+		],
+	],
 ];

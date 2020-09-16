@@ -62,7 +62,8 @@ class Config extends HassankhanConfig
 				"charset" => "",
 				"collation" => "",
 				"prefix" => "",
-			]
+			],
+			"viewModelBinding" => [],
 		];
 	}
 }
