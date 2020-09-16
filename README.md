@@ -1,5 +1,5 @@
 # SLIM-VUE-APP
-A ready-to-start project setup for the use of Slim 4, Vue and Twig.
+A ready-to-start project setup for the use of Slim 4, Vue 2 and Twig 3.
 
 Discover the setup for yourself to see all the nice things available to you (a short description below).
 
