@@ -47,16 +47,16 @@ class DemoController extends Controller
 	 * GET /vmb/{user}
 	 * @param Request $request
 	 * @param Response $response
-	 * @param User $myUser
+	 * @param User $user
 	 * @return Response
 	 * @throws \Twig\Error\LoaderError
 	 * @throws \Twig\Error\RuntimeError
 	 * @throws \Twig\Error\SyntaxError
 	 */
-	public function vmb(Request $request, Response  $response, User $myUser){
-		return $this->view->render($response, "demo3.twig", [
-			"user" => $myUser,
-		]);
+	public function vmb(Request $request, Response  $response, User $user){
+		return $this->view->render($response, "demo3.twig", compact(
+			"user"
+		));
 	}
 
 }

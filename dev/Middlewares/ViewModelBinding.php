@@ -36,7 +36,6 @@ class ViewModelBinding extends Middleware
 				return !is_null($route->getArgument($parameter));
 			})->each(function($mapping, $parameter) use($route, $req){
 				$discriminantValue = $route->getArgument($parameter);
-				$arguments = $route->getArguments();
 				$modelClass = $mapping["model"];
 				$discriminantKey = $mapping["column"];
 

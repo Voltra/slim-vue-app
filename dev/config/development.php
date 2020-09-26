@@ -59,7 +59,7 @@ return [
 		"prefix" => "",
 	],
 	"viewModelBinding" => [
-		"user" => [
+		"__user" => [
 			"model" => \App\Models\User::class,
 			"column" => "username",
 		],
