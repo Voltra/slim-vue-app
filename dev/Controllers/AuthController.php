@@ -69,10 +69,15 @@ class AuthController extends Controller
 
 		if($user === null){
 			$this->flash->failure("Failed to login");
-			return $this->responseUtils->redirect($newResponse, "/");
+			return $this->responseUtils->redirectToRoute($newResponse, "auth.login", [
+				"old" => compact(
+					"username",
+					"remember"
+				),
+			]);
 		}else{
 			$this->flash->success("Successful login as {$username}");
-			return $this->responseUtils->redirect($newResponse, "/");
+			return $this->redirectHome($newResponse);
 		}
 	}
 
@@ -85,12 +90,13 @@ class AuthController extends Controller
 	 */
 	public function register(Request $request, Response $response){
 		$data = $request->getParsedBody();
+		$email = $data["email"] ?? "";
 		$username = $data["username"] ?? "";
 		$password = $data["password"] ?? "";
 		$remember = $data["remember"] ?? false;
 		$res = $this->responseUtils->upgrade($response);
 
-		[$newResponse, $user] = $this->auth->register($res, $username, $password, $remember)->asArray();
+		[$newResponse, $user] = $this->auth->register($res, $email, $username, $password, $remember)->asArray();
 
 		if($user === null){
 			$this->flash->failure("Failed to register $username");
@@ -99,7 +105,13 @@ class AuthController extends Controller
 		}
 
 
-		return $this->responseUtils->redirect($newResponse, "/");
+		return $this->redirectHome($newResponse, [
+			"old" => compact(
+				"email",
+				"username",
+				"remember"
+			),
+		]);
 	}
 
 
@@ -111,6 +123,7 @@ class AuthController extends Controller
 	 */
 	public function logout(Response $response){
 		$res = $this->responseUtils->upgrade($response);
-		return $this->auth->logout($res);
+		$response = $this->auth->logout($res);
+		return $this->redirectHome($response);
 	}
 }

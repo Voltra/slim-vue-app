@@ -17,9 +17,9 @@ abstract class Middleware implements MiddlewareInterface
 	protected $container;
 
 	/**
-	 * @var ResponseUpgrader $responseUpgrader
+	 * @var ResponseUpgrader $responseUtils
 	 */
-	protected $responseUpgrader;
+	protected $responseUtils;
 
 	/**
 	 * @var Config
@@ -46,7 +46,7 @@ abstract class Middleware implements MiddlewareInterface
 	public function __construct(ContainerInterface $container)
 	{
 		$this->container = $container;
-		$this->responseUpgrader = $container->get(ResponseUpgrader::class);
+		$this->responseUtils = $container->get(ResponseUpgrader::class);
 
 		$this->config = $container->get(Config::class);
 		$this->settings = $container->get("settings");

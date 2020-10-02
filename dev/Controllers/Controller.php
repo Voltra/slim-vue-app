@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Actions\Flash;
 use App\Actions\Response;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
 
 class Controller
@@ -37,5 +38,9 @@ class Controller
 		$this->view = $container->get(Twig::class);
 		$this->responseUtils = $container->get(Response::class);
 		$this->flash = $container->get(Flash::class);
+	}
+
+	protected function redirectHome(ResponseInterface $res, array $params = [], array $qs = []){
+		return $this->responseUtils->redirectToRoute($res, "home", $params, $qs);
 	}
 }

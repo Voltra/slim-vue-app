@@ -3,7 +3,14 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
-	<form method="POST" action="{{ url_for('auth.login.post') }}">
+	<form method="POST" action="{{ url_for('auth.register.post') }}">
+		<div class="form-field">
+			<label>Email</label>
+			<input name="email" type="email" value="{% if old.email %}{{ old.email }}{% endif %}" required/>
+			<p class="error"></p>
+		</div>
+
+
 		<div class="form-field">
 			<label>Username</label>
 			<input name="username" type="text" value="{% if old.username %}{{ old.username }}{% endif %}" required/>
@@ -17,17 +24,19 @@
 		</div>
 
 		<div class="form-field">
+			<label>Confirm Password</label>
+			<input name="confirmPassword" type="password" value="" required/>
+			<p class="error"></p>
+		</div>
+
+		<div class="form-field">
 			<input name="remember" type="checkbox" {% if old.remember %} checked {% endif %}/>
 			<label>Remember Me</label>
 		</div>
 
 		<button type="submit">
-			Log In
+			Register
 		</button>
-
-		<a href="{{ url_for("auth.register") }}">
-			You don't have an account? Register
-		</a>
 
 		{{ csrf_input() }}
 	</form>

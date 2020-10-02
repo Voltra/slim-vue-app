@@ -204,16 +204,17 @@ class Auth extends Action
 	/**
 	 * Register a new user
 	 * @param Response $res
+	 * @param string $email
 	 * @param string $username
 	 * @param string $password
 	 * @param bool $remember
 	 * @return UserResponsePair
 	 */
-	public function register(Response $res, string $username, string $password, bool $remember = false): UserResponsePair
+	public function register(Response $res, string $email, string $username, string $password, bool $remember = false): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		try {
-			$user = User::make($username, $this->hash->hashPassword($password));
+			$user = User::make($email, $username, $this->hash->hashPassword($password));
 		} catch (QueryException $e) {
 			return new UserResponsePair($res, null);
 		}

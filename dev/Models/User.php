@@ -7,7 +7,7 @@ use Illuminate\Database\QueryException;
 
 class User extends Model{
 //	protected $table = "users";
-	protected $fillable = ["username", "password"];
+	protected $fillable = ["email", "username", "password"];
 
 	public function roles(){
 		return $this->belongsToMany(Role::class)
@@ -73,13 +73,14 @@ class User extends Model{
 
 	/**
 	 * Create a new user
+	 * @param string $email
 	 * @param string $username
 	 * @param string $passwordHash
 	 * @return User
-	 * @throws QueryException
 	 */
-	public static function make(string $username, string $passwordHash): self{
+	public static function make(string $email, string $username, string $passwordHash): self{
 		return self::create([
+			"email" => $email,
 			"username" => $username,
 			"password" => $passwordHash
 		]);

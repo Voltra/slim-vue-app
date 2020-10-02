@@ -1,6 +1,9 @@
 <?php
 
+use App\Handlers\ExceptionHandler;
+use App\Handlers\LegacyPhpErrorHandler;
 use Middlewares\TrailingSlash;
+use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\Middleware\ContentLengthMiddleware;
 use Slim\Middleware\MethodOverrideMiddleware;
 use Slim\Middleware\Session;
@@ -42,9 +45,9 @@ return static function(\Slim\App $app, \DI\Container $container, $config, $setti
 	->add(\App\Middlewares\RequestBinding::from($container)) // Add request to the container
 	->add(new WhoopsMiddleware());
 
-	$eh = new \App\Handlers\ExceptionHandler($app->getCallableResolver(), $app->getResponseFactory());
-	$request = \Slim\Factory\ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
-	$lh = new \App\Handlers\LegacyPhpErrorHandler($request, $eh, $displayErrorDetails, $logErrors, $logErrorDetails);
+	$eh = new ExceptionHandler($app->getCallableResolver(), $app->getResponseFactory());
+	$request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
+	$lh = new LegacyPhpErrorHandler($request, $eh, $displayErrorDetails, $logErrors, $logErrorDetails);
 	register_shutdown_function($lh);
 
 	$app->addErrorMiddleware(

@@ -40,6 +40,6 @@ class Csrf extends Middleware
 		$view["csrf_token"] = $this->csrf->getToken();
 
 		$rawResponse = $handler->handle($req);
-		return $this->responseUpgrader->upgrade($rawResponse);
+		return $this->responseUtils->upgrade($rawResponse);
 	}
 }

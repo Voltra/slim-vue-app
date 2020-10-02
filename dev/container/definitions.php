@@ -1,14 +1,25 @@
 <?php
 
 use App\Config\Config;
+use App\Helpers\AppEnv;
 use App\Helpers\Path;
+use App\Helpers\TwigExtensions\AuthExtension;
 use App\Helpers\TwigExtensions\CsrfExtension;
 use App\Helpers\TwigExtensions\FlashExtension;
 use App\Helpers\TwigExtensions\PathExtension;
 use DI\Container;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Env;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Slim\Factory\ServerRequestCreatorFactory;
+use Slim\Interfaces\RouteInterface;
+use Slim\Routing\Route;
+use Slim\Routing\RouteContext;
+use Slim\Routing\RouteParser;
 use Slim\Views\Twig;
 use SlimSession\Helper as Session;
 use Slim\Flash\Messages as FlashMessages;
@@ -67,13 +78,14 @@ return [
 		$view->addExtension(new FlashExtension($flash));
 		$view->addExtension(new CsrfExtension($container));
 		$view->addExtension(new PathExtension($container));
-		if(\App\Helpers\AppEnv::dev())
+		$view->addExtension(new AuthExtension($container));
+		if(AppEnv::dev())
 			$view->addExtension(new \Twig\Extension\DebugExtension());
 
 		return $view;
 	},
 	"manifest" => static function(Container $container){
-		$fs = $container->get(\Illuminate\Filesystem\Filesystem::class);
+		$fs = $container->get(Filesystem::class);
 		$rawJson = $fs->get(Path::assets("/manifest.json"));
 		return json_decode($rawJson, true);
 	},
@@ -81,18 +93,38 @@ return [
 		$app = $container->get(\Slim\App::class);
 		return $app->getRouteCollector()->getRouteParser();
 	},
+	"request" => static function(Container $container){
+		return ServerRequestCreatorFactory::create()
+			->createServerRequestFromGlobals();
+	},
+	"app" => \DI\get(\Slim\App::class),
+	"routeParser" => static function(Container $container){
+//		return $container->get("routeContext")->getRouteParser();
+		return $container->get("app")
+			->getRouteCollector()
+			->getRouteParser();
+	},
+	"routeContext" => static function(Container $container){
+		return RouteContext::fromRequest($container->get("request"));
+	},
+	"route" => static function(Container $container){
+		return $container->get("routeContext")->getRoute();
+	},
 
 
 
 	/******************************************************************************************************************\
 	 * Via class strings
 	\******************************************************************************************************************/
-	\Psr\Container\ContainerInterface::class => static function(Container $container){
-		return $container;
-	},
-	\Psr\Log\LoggerInterface::class => \DI\get("logger"),
+	ContainerInterface::class => static function(Container $container){ return $container; },
+	LoggerInterface::class => \DI\get("logger"),
 	Twig::class => \DI\get("view"),
 	Config::class => \DI\get("config"),
+	ServerRequestInterface::class => \DI\get("request"),
+	RouteParser::class => \DI\get("routeParser"),
+	RouteContext::class => \DI\get("routeContext"),
+	RouteInterface::class => \DI\get("route"),
+	Route::class => \DI\get("route"),
 ] + autowired([
 	/******************************************************************************************************************\
 	 * Actions
@@ -121,5 +153,5 @@ return [
 	/******************************************************************************************************************\
 	 * Utils
 	\******************************************************************************************************************/
-	\Illuminate\Filesystem\Filesystem::class
+	Filesystem::class
 ]);

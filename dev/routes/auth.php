@@ -5,40 +5,41 @@
  */
 
 use App\Controllers\AuthController;
+use App\Filters\LogoutFilter;
 use App\Filters\UserFilter;
 use App\Filters\VisitorFilter;
-use Slim\Routing\RouteCollectorProxy;
 use function App\Filters\filter;
 
-//TODO: Better grouping "Cannot register two routes matching /auth for method GET"
+$forVisitor = filter(VisitorFilter::class);
+$forUser = filter(UserFilter::class);
+$forLogout = filter(LogoutFilter::class);
 
-$app->group("/auth", function (RouteCollectorProxy $group){ // [auth]
-	$group->get("", function(RouteCollectorProxy $group){ // [auth]:visitor
-		$group->get("/login", cm(
-			AuthController::class,
-			"loginForm"
-		))->setName("auth.login");
+$app->get("/auth/login", cm(
+	AuthController::class,
+	"loginForm"
+))->setName("auth.login")
+->add($forVisitor);
 
-		$group->get("/register", cm(
-			AuthController::class,
-			"registerForm"
-		))->setName("auth.register");
+$app->get("/auth/register", cm(
+	AuthController::class,
+	"registerForm"
+))->setName("auth.register")
+->add($forVisitor);
 
-		$group->post("/login", cm(
-			AuthController::class,
-			"login"
-		))->setName("auth.login.post");
+$app->post("/auth/login", cm(
+	AuthController::class,
+	"login"
+))->setName("auth.login.post")
+->add($forVisitor);
 
-		$group->post("/register", cm(
-			AuthController::class,
-			"register"
-		))->setName("auth.register.post");
-	})->add(filter(VisitorFilter::class)); // [/auth]:visitor
+$app->post("/auth/register", cm(
+	AuthController::class,
+	"register"
+))->setName("auth.register.post")
+->add($forVisitor);
 
-	$group->get("", function(RouteCollectorProxy $group){ // [auth]:user
-		$group->get("/logout", cm(
-			AuthController::class,
-			"logout"
-		))->setName("auth.logout");
-	})->add(filter(UserFilter::class)); // [/auth]:user
-}); // [/auth]
+$app->get("/auth/logout", cm(
+	AuthController::class,
+	"logout"
+))->setName("auth.logout")
+->add($forLogout);

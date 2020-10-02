@@ -36,7 +36,9 @@ abstract class Filter extends Middleware
 		return new static(...$args);
 	}
 
-	public static function compose(string $lhs, string $rhs){}
+	public static function compose(string $lhs, string $rhs){
+		return composeFilters([$lhs, $rhs]);
+	}
 
 	protected abstract function isAuthorized(): bool;
 
@@ -45,21 +47,30 @@ abstract class Filter extends Middleware
 		return $this->router->urlFor("home");
 	}
 
-	protected function redirectStatus(): int
+	protected function redirectStatus(): ?int
 	{
 		//		return Httpstatuscodes::HTTP_FORBIDDEN;
-		return Httpstatuscodes::HTTP_TEMPORARY_REDIRECT;
+//		return Httpstatuscodes::HTTP_TEMPORARY_REDIRECT;
+		return null;
 	}
 
 	public function process(ServerRequestInterface $req, RequestHandlerInterface $handler): ResponseInterface
 	{
 		if (!$this->isAuthorized()) {
 			$res = new Response();
-			return $this->responseUpgrader->redirect(
-				$res,
-				$this->redirectURL(),
-				$this->redirectStatus()
-			);
+			$status = $this->redirectStatus();
+
+			if(is_null($status))
+				return $this->responseUtils->redirectWith(
+					$res,
+					$this->redirectURL(),
+					$this->redirectStatus()
+				);
+			else
+				return $this->responseUtils->redirect(
+					$res,
+					$this->redirectURL()
+				);
 		}
 
 		return $handler->handle($req);

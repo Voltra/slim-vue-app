@@ -15,6 +15,6 @@ class RequestBinding extends Middleware
 		$this->container->set("request", $req);
 		$this->container->set(ServerRequestInterface::class, $req);
 		$res = $handler->handle($req);
-		return $this->responseUpgrader->upgrade($res);
+		return $this->responseUtils->upgrade($res);
 	}
 }
