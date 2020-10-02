@@ -6,6 +6,21 @@ use Slim\Middleware\MethodOverrideMiddleware;
 use Slim\Middleware\Session;
 use Zeuxisoo\Whoops\Slim\WhoopsMiddleware;
 use Slim\Views\TwigMiddleware;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Log\LoggerInterface as Logger;
+use Slim\Psr7\Response;
+
+function handleError($app){
+	return function(Request $request, Throwable $throwable, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails, ?Logger $logger = null) use($app){
+		$container = $app->getContainer();
+		$response = new Response();
+		//TODO: Custom error handling
+		//TODO: Custom rendering for deifferent status
+
+		$status = 404;
+		return $container->view->render($response->withStatus($status), "errors/$status.twig", []);
+	};
+}
 
 return static function(\Slim\App $app, \DI\Container $container, $config, $settings){
 	$errorMiddleware = $app->addErrorMiddleware(
@@ -14,8 +29,8 @@ return static function(\Slim\App $app, \DI\Container $container, $config, $setti
 		$settings["logErrorDetails"],
 		$container->get("logger")
 	);
-	//TODO: Add custom error handlers
 
+	$errorMiddleware->setDefaultErrorHandler(handleError($app));
 
 	$app->add(\App\Middlewares\ViewModelBinding::from($container)); //WARNING: Experimental due to Slim4's new way of handling request parameters...
 	$app->addRoutingMiddleware();
