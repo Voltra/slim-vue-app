@@ -1,0 +1,52 @@
+{% macro navLink(text, name, param) %}
+	{% if is_current_url(name, param) %}
+		{{ text }}
+	{% else %}
+		<a href="{{ url_for(name, param) }}">
+			{{ text }}
+		</a>
+	{% endif %}
+{% endmacro %}
+
+{% from module("demo") import navLink %}
+
+{% set routes = [
+	{
+		'text': 'Demo',
+		'name': 'demo1',
+		'param': {}
+	},
+	{
+		'text': 'Demo path parameter binding',
+		'name': 'demo2',
+		'param': {
+			'user': "iamuser"
+		}
+	},
+	{
+		'text': 'Demo route-model binding (success)',
+		'name': 'demo3',
+		'param': {
+			'__user': "test"
+		}
+	},
+	{
+		'text': 'Demo route-model binding (failure)',
+		'name': 'demo3',
+		'param': {
+			'__user': "doest_not_exist"
+		}
+	}
+] %}
+
+<hr/>
+<nav style="display: block; width: 100%;">
+	<ul style="display: block; width: 100%;">
+		{% for route in routes %}
+			<li style="display: block; width: 100%;">
+				{{ navLink(route.text, route.name, route.param) }}
+			</li>
+		{% endfor %}
+	</ul>
+</nav>
+<hr/>

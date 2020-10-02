@@ -21,7 +21,7 @@ class Hash extends Action
 	public function hashPassword(string $password): string
 	{
 		return password_hash($password, $this->algo, [
-			"cost" => $this->cost
+			"cost" => $this->cost,
 		]);
 	}
 

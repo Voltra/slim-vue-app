@@ -10,8 +10,8 @@ use function App\Filters\composeFilters;
  * @var Slim\App $app
  */
 
-$app->get("/", Routing::cm(\App\Controllers\DemoController::class, "home"))
+$app->get("/", cm(\App\Controllers\DemoController::class, "home"))
 ->add(composeFilters([
 	VisitorFilter::class,
 	VisitorFilter::class,
-]));
+]))->setName("demo1");

@@ -1,0 +1,7 @@
+{% extends layout() %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+	<form method="POST" action="{{ url_for('auth.login') }}"></form>
+{% endblock %}

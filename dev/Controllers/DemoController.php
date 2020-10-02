@@ -30,17 +30,17 @@ class DemoController extends Controller
 	 * GET /user/{user_}
 	 * @param Request $request
 	 * @param Response $response
-	 * @param string $user_
+	 * @param string $user
 	 * @return Response
 	 * @throws \Twig\Error\LoaderError
 	 * @throws \Twig\Error\RuntimeError
 	 * @throws \Twig\Error\SyntaxError
 	 */
-	public function user(Request $request, Response $response, string $user_){
+	public function user(Request $request, Response $response, string $user){
 		// $user is the {user} route parameter
-		return $this->view->render($response, "demo2.twig", [
-			"user" => $user_,
-		]);
+		return $this->view->render($response, "demo2.twig", compact(
+			"user"
+		));
 	}
 
 	/**

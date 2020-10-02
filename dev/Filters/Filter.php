@@ -70,3 +70,14 @@ abstract class Filter extends Middleware
 		return ComposedFilter::from($this->container, $this, $rhs);
 	}
 }
+
+/**
+ * Resolve a route filter
+ * @param $filterClass - The classname of the filter
+ * @return Filter
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
+ */
+function filter($filterClass){
+	return resolve($filterClass);
+}

@@ -10,14 +10,8 @@ class User extends Model{
 	protected $fillable = ["username", "password"];
 
 	public function roles(){
-		/*return $this->hasManyThrough(
-			Role::class, UserRole::class,
-			"user_id", "id",
-			"id", "role_id"
-		);*/
 		return $this->belongsToMany(Role::class)
 		->using(UserRole::class)
-//		->as("granted")
 		->withTimestamps();
 	}
 

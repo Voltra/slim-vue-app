@@ -15,7 +15,7 @@ use Slim\Routing\RouteContext;
 
 //cf. https://fetzi.dev/implicit-model-binding-in-slim-apis/
 
-class ViewModelBinding extends Middleware
+class RouteModelBinding extends Middleware
 {
 	/**
 	 * @inheritDoc

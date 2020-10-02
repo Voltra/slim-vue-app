@@ -23,16 +23,12 @@ function handleError($app){
 }
 
 return static function(\Slim\App $app, \DI\Container $container, $config, $settings){
-	$errorMiddleware = $app->addErrorMiddleware(
-		$settings["displayErrorDetails"],
-		$settings["logErrors"],
-		$settings["logErrorDetails"],
-		$container->get("logger")
-	);
+	$displayErrorDetails = $settings["displayErrorDetails"];
+	$logErrors = $settings["logErrors"];
+	$logErrorDetails = $settings["logErrorDetails"];
+	$logger = $container->get("logger");
 
-	$errorMiddleware->setDefaultErrorHandler(handleError($app));
-
-	$app->add(\App\Middlewares\ViewModelBinding::from($container)); //WARNING: Experimental due to Slim4's new way of handling request parameters...
+	$app->add(\App\Middlewares\RouteModelBinding::from($container)); //WARNING: Experimental due to Slim4's new way of handling request parameters...
 	$app->addRoutingMiddleware();
 	$app->addBodyParsingMiddleware();
 
@@ -46,4 +42,15 @@ return static function(\Slim\App $app, \DI\Container $container, $config, $setti
 	->add(\App\Middlewares\RequestBinding::from($container)) // Add request to the container
 	->add(new WhoopsMiddleware());
 
+	$eh = new \App\Handlers\ExceptionHandler($app->getCallableResolver(), $app->getResponseFactory());
+	$request = \Slim\Factory\ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
+	$lh = new \App\Handlers\LegacyPhpErrorHandler($request, $eh, $displayErrorDetails, $logErrors, $logErrorDetails);
+	register_shutdown_function($lh);
+
+	$app->addErrorMiddleware(
+		$displayErrorDetails,
+		$logErrors,
+		$logErrorDetails,
+		$logger
+	)->setDefaultErrorHandler($eh);
 };

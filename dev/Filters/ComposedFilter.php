@@ -62,17 +62,11 @@ class ComposedFilter extends Filter{
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException
  */
-function composeFilters($filterClasses){
-	/**
-	 * @var Filter $composedFilter
-	 */
-	$composedFilter = resolve($filterClasses[0]);
+function composeFilters(array $filterClasses){
+	$composedFilter = filter($filterClasses[0]);
 
 	for($i = 1, $length = count($filterClasses) ; $i < $length ; ++$i){
-		/**
-		 * @var Filter $filter
-		 */
-		$filter = resolve($filterClasses[$i]);
+		$filter = filter($filterClasses[$i]);
 
 		$composedFilter = $composedFilter->composeWith($filter);
 	}

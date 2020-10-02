@@ -8,4 +8,5 @@ use Psr\Http\Message\ResponseInterface as Response;
  * @var Slim\App $app
  */
 
-$app->get("/user/{user_}", Routing::cm(\App\Controllers\DemoController::class, "user"));
+$app->get("/user/{user}", cm(\App\Controllers\DemoController::class, "user"))
+	->setName("demo2");
