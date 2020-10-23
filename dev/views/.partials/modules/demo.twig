@@ -1,8 +1,8 @@
-{% macro navLink(text, name, param) %}
-	{% if is_current_url(name, param) %}
+{% macro navLink(text, name, param = {}, qs = {}) %}
+	{% if is_current_url(name, param, qs) %}
 		{{ text }}
 	{% else %}
-		<a href="{{ url_for(name, param) }}">
+		<a href="{{ url_for(name, param, qs) }}">
 			{{ text }}
 		</a>
 	{% endif %}
@@ -36,7 +36,14 @@
 		'param': {
 			'__user': "doest_not_exist"
 		}
-	}
+	},
+	{
+		'text': 'Routes that accept redirects : /redirectable?redir=https://google.fr',
+		'name': 'redirectable',
+		'qs': {
+			'redir': "https://google.fr"
+		}
+	},
 ] %}
 
 <hr/>
@@ -44,7 +51,7 @@
 	<ul style="display: block; width: 100%;">
 		{% for route in routes %}
 			<li style="display: block; width: 100%;">
-				{{ navLink(route.text, route.name, route.param) }}
+				{{ navLink(route.text, route.name, route.param|default({}), route.qs|default({})) }}
 			</li>
 		{% endfor %}
 	</ul>

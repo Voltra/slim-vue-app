@@ -64,6 +64,11 @@ class Config extends HassankhanConfig
 				"prefix" => "",
 			],
 			"viewModelBinding" => [],
+			"redirect" => [
+				"mode" => "qs",
+				"key" => "redir",
+				"attribute" => "shouldRedirect",
+			],
 		];
 	}
 }

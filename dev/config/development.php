@@ -64,4 +64,9 @@ return [
 			"column" => "username",
 		],
 	],
+	"redirect" => [
+		"mode" => "qs",
+		"key" => "redir",
+		"attribute" => "shouldRedirect",
+	],
 ];
