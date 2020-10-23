@@ -40,6 +40,7 @@ return static function(\Slim\App $app, \DI\Container $container, $config, $setti
 	->add(new ContentLengthMiddleware()) // Add correct content length
 	->add(new Session($config["session"]))
 	->add(TwigMiddleware::createFromContainer($app))
+	->add(\App\Middlewares\RedirectAfterRequest::from($container))
 	->add(\App\Middlewares\Csrf::from($container))
 	->add(\App\Middlewares\Auth::from($container))
 	->add(\App\Middlewares\RequestBinding::from($container)) // Add request to the container
