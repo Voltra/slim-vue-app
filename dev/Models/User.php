@@ -37,6 +37,10 @@ class User extends Model{
 		return $this->hasOne(TwoFactor::class);
 	}
 
+	public function requires2FA(): bool{
+		return $this->twoFactor !== null;
+	}
+
 	public function isAdmin(): bool{
 		return !is_null($this->admin);
 	}

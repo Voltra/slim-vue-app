@@ -69,6 +69,9 @@ class Config extends HassankhanConfig
 				"key" => "redir",
 				"attribute" => "shouldRedirect",
 			],
+			"2fa" => [
+				"issuer" => "",
+			],
 		];
 	}
 }

@@ -69,4 +69,7 @@ return [
 		"key" => "redir",
 		"attribute" => "shouldRedirect",
 	],
+	"2fa" => [
+		"issuer" => "slim-vue-app.com",
+	],
 ];
