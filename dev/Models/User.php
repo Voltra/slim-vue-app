@@ -33,6 +33,10 @@ class User extends Model{
 		return $this->hasOne(UserRemember::class);
 	}
 
+	public function twoFactor(){
+		return $this->hasOne(TwoFactor::class);
+	}
+
 	public function isAdmin(): bool{
 		return !is_null($this->admin);
 	}
