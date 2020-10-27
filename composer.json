@@ -46,7 +46,8 @@
 		"paragonie/random_compat": "^2.0",
 		"paragonie/random-lib": "^2.0",
 		"bryanjhv/slim-session": "^4.1",
-		"lukasoppermann/http-status": "^2.0"
+		"lukasoppermann/http-status": "^2.0",
+		"paragonie/multi-factor": "^0.2.2"
     },
 	"require-dev": {
 		"phpunit/phpunit": "^9.3",
