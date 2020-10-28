@@ -38,7 +38,7 @@ class User extends Model{
 	}
 
 	public function requires2FA(): bool{
-		return $this->twoFactor !== null;
+		return $this->twoFactor()->exists();
 	}
 
 	public function isAdmin(): bool{

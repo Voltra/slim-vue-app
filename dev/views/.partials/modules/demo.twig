@@ -24,17 +24,17 @@
 		}
 	},
 	{
-		'text': 'Demo route-model binding (success)',
+		'text': 'Demo route-model binding (success for "test")',
 		'name': 'demo3',
 		'param': {
 			'__user': "test"
 		}
 	},
 	{
-		'text': 'Demo route-model binding (failure)',
+		'text': 'Demo route-model binding (failure for "does_not_exist")',
 		'name': 'demo3',
 		'param': {
-			'__user': "doest_not_exist"
+			'__user': "does_not_exist"
 		}
 	},
 	{
@@ -42,6 +42,13 @@
 		'name': 'redirectable',
 		'qs': {
 			'redir': "https://google.fr"
+		}
+	},
+	{
+		'text': 'QR code (needs auth as "test")',
+		'name': 'demo.2fa',
+		'param': {
+			'__user': "test"
 		}
 	},
 ] %}

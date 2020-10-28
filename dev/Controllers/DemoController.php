@@ -4,6 +4,7 @@
 namespace App\Controllers;
 
 
+use App\Actions\TwoFactor;
 use App\Models\User;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -53,10 +54,9 @@ class DemoController extends Controller
 	 * @throws \Twig\Error\RuntimeError
 	 * @throws \Twig\Error\SyntaxError
 	 */
-	public function vmb(Request $request, Response  $response, User $user){
+	public function vmb(Request $request, Response $response, User $user){
 		return $this->view->render($response, "demo3.twig", compact(
 			"user"
 		));
 	}
-
 }

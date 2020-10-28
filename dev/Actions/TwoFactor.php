@@ -7,11 +7,13 @@ namespace App\Actions;
 use App\Models\User;
 use DI\Container;
 use Kelunik\TwoFactor\Oath;
+use RobThree\Auth\Providers\Qr\IQRCodeProvider;
+use RobThree\Auth\TwoFactorAuth;
 
 class TwoFactor extends Action
 {
 	/**
-	 * @var Oath
+	 * @var TwoFactorAuth
 	 */
 	protected $otp;
 
@@ -20,11 +22,53 @@ class TwoFactor extends Action
 	 */
 	protected $issuer;
 
+	/**
+	 * @var string
+	 */
+	protected $algo;
+
+	/**
+	 * @var int
+	 */
+	protected $digits;
+
+	/**
+	 * @var mixed
+	 */
+	protected $period;
+
+	/**
+	 * @var IQRCodeProvider
+	 */
+	protected $qrProvider;
+	/**
+	 * @var string
+	 */
+	protected $labelField;
+
+	/**
+	 * @inheritDoc
+	 * @throws \RobThree\Auth\TwoFactorAuthException
+	 */
 	public function __construct(Container $container)
 	{
 		parent::__construct($container);
-		$this->otp = new Oath();
-		$this->issuer = $this->container->get("config")["2fa.issuer"];
+		$this->issuer = $this->config["2fa.issuer"];
+		$this->algo = $this->config["2fa.algo"];
+		$this->digits = $this->config["2fa.digits"];
+		$this->period = $this->config["2fa.period"];
+		$this->labelField = $this->config["2fa.label_field"];
+
+		$class = $this->config["2fa.qr_provider"];
+		$this->qrProvider = new $class();
+
+		$this->otp = new TwoFactorAuth(
+			$this->issuer,
+			$this->digits,
+			$this->period,
+			$this->algo,
+			$this->qrProvider
+		);
 	}
 
 	protected function requires2FA(User $user): bool{
@@ -46,28 +90,30 @@ class TwoFactor extends Action
 			return true;
 
 		$seed = $this->getSeed($user);
-		return $this->otp->verifyTotp($seed, $userCode);
+		return $this->otp->verifyCode($seed, $userCode);
 	}
 
 	/**
 	 * Generate a new discriminant for 2FA
 	 * @return string
+	 * @throws \RobThree\Auth\TwoFactorAuthException
 	 */
 	public function newDiscriminant(): string{
-		return $this->otp->generateKey();
+		return $this->otp->createSecret();
 	}
 
 	/**
 	 * Generate the QRCode URI for the given user
 	 * @param User $user
 	 * @return string
+	 * @throws \RobThree\Auth\TwoFactorAuthException
 	 */
 	public function qrCode(User $user): string{
 		if(!$this->requires2FA($user))
 			return "";
 
 		$seed = $this->getSeed($user);
-		return $this->otp->getUri($seed, $this->issuer, $user->email);
+		return $this->otp->getQRCodeImageAsDataUri($user->{$this->labelField}, $seed);
 	}
 
 	/**
@@ -79,25 +125,37 @@ class TwoFactor extends Action
 		if(!$this->requires2FA($user))
 			return "";
 
-		$seed = $this->getSeed($user);
-		return $this->otp->encodeKey($seed);
+		return $this->getSeed($user);
 	}
 
 
 	/**
 	 * Enable 2FA for the given user
 	 * @param User $user
-	 * @return bool
+	 * @throws \RobThree\Auth\TwoFactorAuthException
 	 */
-	public function enable2FA(User $user): bool{
+	public function enable2FA(User $user){
 		if($this->requires2FA($user))
-			return true;
+			return;
 
 		$discr = $this->newDiscriminant();
+//		dd($discr);
 
-		return $user->twoFactor()->insert([
-			"discriminant" => $discr,
-			"latest_code" => null,
-		]);
+		$tfa = new \App\Models\TwoFactor();
+		$tfa->discriminant = $discr;
+		$tfa->latest_code = null;
+
+		$user->twoFactor()->save($tfa);
+	}
+
+	/**
+	 * Disable 2FA for the given user
+	 * @param User $user
+	 */
+	public function disable2FA(User $user){
+		if(!$this->requires2FA($user))
+			return;
+
+		$user->twoFactor()->delete();
 	}
 }

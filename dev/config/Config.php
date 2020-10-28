@@ -71,6 +71,11 @@ class Config extends HassankhanConfig
 			],
 			"2fa" => [
 				"issuer" => "",
+				"algo" => "sha1",
+				"digits" => 6,
+				"period" => 30,
+				"qr_provider" => \RobThree\Auth\Providers\Qr\ImageChartsQRCodeProvider::class,
+				"label_field" => "email",
 			],
 		];
 	}
