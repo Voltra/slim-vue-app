@@ -6,7 +6,6 @@ namespace App\Actions;
 
 use App\Models\User;
 use DI\Container;
-use Kelunik\TwoFactor\Oath;
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 

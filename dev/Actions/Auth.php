@@ -28,6 +28,10 @@ class Auth extends Action
 
 	/**@var Session $session*/
 	protected $session;
+	/**
+	 * @var TwoFactor|mixed
+	 */
+	protected $tfa;
 
 	public function __construct(Container $container)
 	{
@@ -41,12 +45,10 @@ class Auth extends Action
 		$this->containerKey = $config["container"];
 		$this->session = $container->get("session");
 
-		/*$this->hash = Hash::from($container);
-		$this->cookies = Cookies::from($container);
-		$this->random = Random::from($container);*/
 		$this->hash = $container->get(Hash::class);
 		$this->cookies = $container->get(Cookies::class);
 		$this->random = $container->get(Random::class);
+		$this->tfa = $container->get(TwoFactor::class);
 
 		if (!$this->user())
 			$this->container->set($this->containerKey, null);
@@ -121,19 +123,49 @@ class Auth extends Action
 		return $user->username === $username;
 	}
 
+	public function handle2FA(User $user, string $code): bool{
+		//TODO: Throw exception when trying to replay code
+		//TODO: Throw exception when code is invalid
+
+		if(!$user->requires2FA())
+			return true;
+
+		/**
+		 * @var \App\Models\TwoFactor $tfa
+		 */
+		$tfa = $user->twoFactor;
+
+		if($code === $tfa->latest_code) // avoid code replay
+			return false;
+
+		$isValid = $this->tfa->validate($user, $code);
+		if($isValid){
+			$tfa->latest_code = $code; // avoid code replay
+			$tfa->save();
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Attempts to log in with the given credentials
 	 * @param Response $res
 	 * @param string $username
 	 * @param string $password
 	 * @param bool $remember
+	 * @param string $tfaCode
 	 * @return UserResponsePair
 	 */
-	public function login(Response $res, string $username, string $password, bool $remember = false): UserResponsePair
+	public function login(Response $res, string $username, string $password, bool $remember = false, string $tfaCode = ""): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
-		if ($user && $this->hash->checkPassword($password, $user->password)) {
+		$shouldAccept = $user
+			&& $this->hash->checkPassword($password, $user->password)
+			&& $this->handle2FA($user, $tfaCode);
+
+		if ($shouldAccept) {
 			$ret = $this->logout($res);
 			$this->container->set($this->containerKey, $user);
 
@@ -143,6 +175,7 @@ class Auth extends Action
 			$this->syncContainerAndSession();
 			return new UserResponsePair($ret, $user);
 		}
+
 		return new UserResponsePair($res, null);
 	}
 
