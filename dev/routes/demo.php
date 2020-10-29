@@ -12,7 +12,4 @@ use function App\Filters\composeFilters;
  */
 
 $app->get("/", cm(DemoController::class, "home"))
-/*->add(composeFilters([
-	VisitorFilter::class,
-	VisitorFilter::class,
-]))*/->setName("home");
+->setName("home");

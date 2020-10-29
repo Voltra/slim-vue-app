@@ -1,0 +1,27 @@
+{% extends layout() %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block css %}
+	<link rel="stylesheet" href="{{ fromManifest("2fa.css") }}"/>
+{% endblock %}
+
+{% block js %}
+	<script defer src="{{ fromManifest("2fa.js") }}"></script>
+{% endblock %}
+
+{% block body %}
+	<p>
+		<a href="{{ url_for("demo.2fa.enable", { __user: user.username }) }}">Enable 2FA</a>
+		<a href="{{ url_for("demo.2fa.disable", { __user: user.username }) }}">Disable 2FA</a>
+	</p>
+
+	Use 2FA for {{ user.username }} at {{ user.email }}<br/>
+
+	<qr-code url="{{ qrcode }}"></qr-code>
+
+	<p>
+		<u>Secret&nbsp;:</u><br/>
+		<code>{{ secret }}</code>
+	</p>
+{% endblock %}

@@ -12,36 +12,50 @@
 
 {% set routes = [
 	{
-		'text': 'Demo',
-		'name': 'home',
-		'param': {}
+		text: 'Demo',
+		name: 'home',
+		param: {}
 	},
 	{
-		'text': 'Demo path parameter binding',
-		'name': 'demo2',
-		'param': {
-			'user': "iamuser"
+		text: 'Demo path parameter binding',
+		name: 'demo2',
+		param: {
+			user: "iamuser"
 		}
 	},
 	{
-		'text': 'Demo route-model binding (success)',
-		'name': 'demo3',
-		'param': {
-			'__user': "test"
+		text: 'Force login (as "test")',
+		name: 'auth.force_login',
+		param: {
+			__user: "test"
 		}
 	},
 	{
-		'text': 'Demo route-model binding (failure)',
-		'name': 'demo3',
-		'param': {
-			'__user': "doest_not_exist"
+		text: 'Demo route-model binding (success for "test")',
+		name: 'demo3',
+		param: {
+			__user: "test"
 		}
 	},
 	{
-		'text': 'Routes that accept redirects : /redirectable?redir=https://google.fr',
-		'name': 'redirectable',
-		'qs': {
-			'redir': "https://google.fr"
+		text: 'Demo route-model binding (failure for "does_not_exist")',
+		name: 'demo3',
+		param: {
+			__user: "does_not_exist"
+		}
+	},
+	{
+		text: 'Routes that accept redirects : /redirectable?redir=https://google.fr',
+		name: 'redirectable',
+		qs: {
+			redir: "https://google.fr"
+		}
+	},
+	{
+		text: 'QR code (needs auth as "test")',
+		name: 'demo.2fa',
+		param: {
+			__user: "test"
 		}
 	},
 ] %}

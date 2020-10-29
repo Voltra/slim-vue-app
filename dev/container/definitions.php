@@ -137,6 +137,7 @@ return [
 	\App\Actions\Cookies::class,
 	\App\Actions\Csrf::class,
 	\App\Actions\Auth::class,
+	\App\Actions\TwoFactor::class,
 
 
 

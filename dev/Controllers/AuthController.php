@@ -62,10 +62,17 @@ class AuthController extends Controller
 		$username = $data["username"] ?? "";
 		$password = $data["password"] ?? "";
 		$remember = $data["remember"] ?? false;
+		$code = $data["2fa"] ?? "";
 
 		$res = $this->responseUtils->upgrade($response);
 
-		[$newResponse, $user] = $this->auth->login($res, $username, $password, $remember)->asArray();
+		[$newResponse, $user] = $this->auth->login(
+			$res,
+			$username,
+			$password,
+			$remember,
+			$code
+		)->asArray();
 
 		if($user === null){
 			$this->flash->failure("Failed to login");
