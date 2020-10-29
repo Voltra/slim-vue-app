@@ -103,7 +103,6 @@
 		"compary": "^0.1.0",
 		"db.js": "^0.15.0",
 		"hamburgers": "^1.1.3",
-		"qrcode": "^1.4.4",
 		"sass-mq": "^5.0.1",
 		"sequency": "^0.19.2",
 		"spinner-lord": "^0.2.6",
