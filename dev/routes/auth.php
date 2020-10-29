@@ -4,10 +4,14 @@
  * @var \Slim\App $app
  */
 
+use App\Actions\Auth;
 use App\Controllers\AuthController;
 use App\Filters\LogoutFilter;
 use App\Filters\UserFilter;
 use App\Filters\VisitorFilter;
+use App\Models\User;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\Psr7\Response;
 use function App\Filters\filter;
 
 $forVisitor = filter(VisitorFilter::class);
@@ -43,3 +47,19 @@ $app->get("/auth/logout", cm(
 	"logout"
 ))->setName("auth.logout")
 ->add($forLogout);
+
+$app->get("/auth/force-login/{__user}", function(ServerRequestInterface $req,  Response $res, User $user){
+	/**
+	 * @var Auth $auth
+	 */
+	$auth = resolve(Auth::class);
+
+	/**
+	 * @var \App\Actions\Response $responseUtils
+	 */
+	$responseUtils = resolve(\App\Actions\Response::class);
+
+	$response = $auth->forceLogin($res, $user->username)->response;
+	return $responseUtils->redirectToRoute($response, "home");
+})->setName("auth.force_login")
+->add($forVisitor);
