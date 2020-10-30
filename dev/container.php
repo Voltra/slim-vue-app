@@ -14,14 +14,22 @@ $container = $builder->build();
 
 /**
  * Resolve a dependency using the DI container
- * @param string $key
+ * @param class-string|string $key
  * @return mixed
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException
  */
-function resolve(string $key){
+function resolve($key){
 	global $container;
 	return $container->get($key);
+}
+
+function controllerMethod(string $controllerClass, string $method){
+	return \App\Helpers\Routing::controllerMethod($controllerClass, $method);
+}
+
+function cm(string $controllerClass, string $method){
+	return controllerMethod($controllerClass, $method);
 }
 
 return $container;

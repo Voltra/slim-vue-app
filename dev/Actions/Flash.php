@@ -21,7 +21,7 @@ class Flash extends Action
 	{
 		parent::__construct($container);
 
-		$this->flash = $container->flash;
+		$this->flash = $container->get("flash");
 
 		$this->now = new class ($this->flash)
 		{

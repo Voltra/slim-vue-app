@@ -15,7 +15,7 @@ use Slim\Routing\RouteContext;
 
 //cf. https://fetzi.dev/implicit-model-binding-in-slim-apis/
 
-class ViewModelBinding extends Middleware
+class RouteModelBinding extends Middleware
 {
 	/**
 	 * @inheritDoc
@@ -36,7 +36,6 @@ class ViewModelBinding extends Middleware
 				return !is_null($route->getArgument($parameter));
 			})->each(function($mapping, $parameter) use($route, $req){
 				$discriminantValue = $route->getArgument($parameter);
-				$arguments = $route->getArguments();
 				$modelClass = $mapping["model"];
 				$discriminantKey = $mapping["column"];
 

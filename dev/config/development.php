@@ -59,9 +59,22 @@ return [
 		"prefix" => "",
 	],
 	"viewModelBinding" => [
-		"user" => [
+		"__user" => [
 			"model" => \App\Models\User::class,
 			"column" => "username",
 		],
+	],
+	"redirect" => [
+		"mode" => "qs",
+		"key" => "redir",
+		"attribute" => "shouldRedirect",
+	],
+	"2fa" => [
+		"issuer" => "slim-vue-app.ninja",
+		"algo" => "sha1",
+		"digits" => 6,
+		"period" => 30,
+		"qr_provider" => \RobThree\Auth\Providers\Qr\ImageChartsQRCodeProvider::class,
+		"label_field" => "username",
 	],
 ];

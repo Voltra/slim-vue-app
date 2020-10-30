@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\DemoController;
 use App\Filters\VisitorFilter;
 use App\Helpers\Routing;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -10,8 +11,5 @@ use function App\Filters\composeFilters;
  * @var Slim\App $app
  */
 
-$app->get("/", Routing::cm(\App\Controllers\DemoController::class, "home"))
-->add(composeFilters([
-	VisitorFilter::class,
-	VisitorFilter::class,
-]));
+$app->get("/", cm(DemoController::class, "home"))
+->setName("home");

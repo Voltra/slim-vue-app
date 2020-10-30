@@ -1,0 +1,40 @@
+{% extends layout() %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+	<form method="POST" action="{{ url_for('auth.login.post') }}">
+		<div class="form-field">
+			<label for="username">Username</label>
+			<input name="username" type="text" value="{% if old.username %}{{ old.username }}{% endif %}" required/>
+			<p class="error"></p>
+		</div>
+
+		<div class="form-field">
+			<label for="password">Password</label>
+			<input name="password" type="password" value="" required/>
+			<p class="error"></p>
+		</div>
+
+		<div class="form-field">
+			<label for="2fa">2FA</label>
+			<input name="2fa" type="number" maxlength="6" minlength="6"/>
+			<p class="error"></p>
+		</div>
+
+		<div class="form-field">
+			<input name="remember" type="checkbox" {% if old.remember %} checked {% endif %}/>
+			<label for="remember">Remember Me</label>
+		</div>
+
+		<button type="submit">
+			Log In
+		</button>
+
+		<a href="{{ url_for("auth.register") }}">
+			You don't have an account? Register
+		</a>
+
+		{{ csrf_input() }}
+	</form>
+{% endblock %}

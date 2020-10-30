@@ -1,14 +1,25 @@
 <?php
 
 use App\Config\Config;
+use App\Helpers\AppEnv;
 use App\Helpers\Path;
+use App\Helpers\TwigExtensions\AuthExtension;
 use App\Helpers\TwigExtensions\CsrfExtension;
 use App\Helpers\TwigExtensions\FlashExtension;
 use App\Helpers\TwigExtensions\PathExtension;
 use DI\Container;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Env;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Slim\Factory\ServerRequestCreatorFactory;
+use Slim\Interfaces\RouteInterface;
+use Slim\Routing\Route;
+use Slim\Routing\RouteContext;
+use Slim\Routing\RouteParser;
 use Slim\Views\Twig;
 use SlimSession\Helper as Session;
 use Slim\Flash\Messages as FlashMessages;
@@ -24,10 +35,10 @@ function autowired(array $classes): array{
 	}, $classes), "array_merge", []);
 }
 
-return [
-	/******************************************************************************************************************\
-	 * Via keys
-	\******************************************************************************************************************/
+/******************************************************************************************************************\
+ * Via keys
+\******************************************************************************************************************/
+$viaKeys = [
 	"config" => \DI\value(require(Path::dev("/config.php"))),
 	"settings" => static function(Container $container){
 		/**
@@ -42,8 +53,8 @@ return [
 
 		$logger = new Logger($settings["name"]);
 		$logger->pushHandler(new StreamHandler(
-			Path::root($settings["path"]),
-			$settings["level"])
+				Path::root($settings["path"]),
+				$settings["level"])
 		);
 
 		return $logger;
@@ -67,13 +78,14 @@ return [
 		$view->addExtension(new FlashExtension($flash));
 		$view->addExtension(new CsrfExtension($container));
 		$view->addExtension(new PathExtension($container));
-		if(\App\Helpers\AppEnv::dev())
+		$view->addExtension(new AuthExtension($container));
+		if(AppEnv::dev())
 			$view->addExtension(new \Twig\Extension\DebugExtension());
 
 		return $view;
 	},
 	"manifest" => static function(Container $container){
-		$fs = $container->get(\Illuminate\Filesystem\Filesystem::class);
+		$fs = $container->get(Filesystem::class);
 		$rawJson = $fs->get(Path::assets("/manifest.json"));
 		return json_decode($rawJson, true);
 	},
@@ -81,22 +93,49 @@ return [
 		$app = $container->get(\Slim\App::class);
 		return $app->getRouteCollector()->getRouteParser();
 	},
-
-
-
-	/******************************************************************************************************************\
-	 * Via class strings
-	\******************************************************************************************************************/
-	\Psr\Container\ContainerInterface::class => static function(Container $container){
-		return $container;
+	"request" => static function(Container $container){
+		return ServerRequestCreatorFactory::create()
+			->createServerRequestFromGlobals();
 	},
-	\Psr\Log\LoggerInterface::class => \DI\get("logger"),
+	"app" => \DI\get(\Slim\App::class),
+	"routeParser" => static function(Container $container){
+//		return $container->get("routeContext")->getRouteParser();
+		return $container->get("app")
+			->getRouteCollector()
+			->getRouteParser();
+	},
+	"routeContext" => static function(Container $container){
+		return RouteContext::fromRequest($container->get("request"));
+	},
+	"route" => static function(Container $container){
+		return $container->get("routeContext")->getRoute();
+	},
+];
+
+/******************************************************************************************************************\
+ * Via class strings
+\******************************************************************************************************************/
+$viaClassStrings = [
+	ContainerInterface::class => static function(Container $container){ return $container; },
+	LoggerInterface::class => \DI\get("logger"),
 	Twig::class => \DI\get("view"),
 	Config::class => \DI\get("config"),
-] + autowired([
-	/******************************************************************************************************************\
-	 * Actions
-	\******************************************************************************************************************/
+	ServerRequestInterface::class => \DI\get("request"),
+	RouteParser::class => \DI\get("routeParser"),
+	RouteContext::class => \DI\get("routeContext"),
+	RouteInterface::class => \DI\get("route"),
+	Route::class => \DI\get("route"),
+	\League\Flysystem\Adapter\Local::class => static function(Container $container){
+		return new \League\Flysystem\Adapter\Local(Path::uploads());
+	},
+];
+
+
+
+/******************************************************************************************************************\
+ * Actions
+\******************************************************************************************************************/
+$actions = autowired([
 	\App\Actions\PostValidator::class,
 	\App\Actions\Response::class,
 	\App\Actions\Hash::class,
@@ -105,21 +144,31 @@ return [
 	\App\Actions\Cookies::class,
 	\App\Actions\Csrf::class,
 	\App\Actions\Auth::class,
+	\App\Actions\TwoFactor::class,
+	\App\Actions\FileSystem::class,
+]);
 
 
 
-	/******************************************************************************************************************\
-	 * Filters
-	\******************************************************************************************************************/
+/******************************************************************************************************************\
+ * Filters
+\******************************************************************************************************************/
+$filters = autowired([
 	\App\Filters\VisitorFilter::class,
 	\App\Filters\UserFilter::class,
 	\App\Filters\LogoutFilter::class,
 	\App\Filters\AdminFilter::class,
-
-
-
-	/******************************************************************************************************************\
-	 * Utils
-	\******************************************************************************************************************/
-	\Illuminate\Filesystem\Filesystem::class
 ]);
+
+
+
+/******************************************************************************************************************\
+ * Utils
+\******************************************************************************************************************/
+$utils = autowired([
+	Filesystem::class,
+]);
+
+
+
+return $viaKeys + $viaClassStrings + $actions + $filters + $utils;

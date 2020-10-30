@@ -8,6 +8,7 @@ define("PUBLIC_HTML", ROOT . "/public_html");
 define("ASSETS", PUBLIC_HTML . "/assets");
 define("TMP", ROOT . "/tmp");
 define("CACHE", TMP . "/cache");
+define("UPLOADS", PUBLIC_HTML . "/uploads");
 
 abstract class Path
 {
@@ -39,5 +40,9 @@ abstract class Path
 	public static function cache(string $path = ""): string
 	{
 		return CACHE . $path;
+	}
+
+	public static function uploads(string $path = ""): string{
+		return UPLOADS . $path;
 	}
 }

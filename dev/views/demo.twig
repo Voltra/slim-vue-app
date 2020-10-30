@@ -3,17 +3,25 @@
 {% block title %}Homepage{% endblock %}
 
 {% block css %}
-	<link rel="stylesheet" href="{{ fromManifest('demo.css') }}"/>
+	<link rel="stylesheet" href="{{ fromManifest("demo.css") }}"/>
 {% endblock %}
 
 {% block js %}
-	<script defer src="{{ fromManifest('demo.js') }}"></script>
+	<script defer src="{{ fromManifest("demo.js") }}"></script>
 {% endblock %}
 
 {% block body %}
+	{{ json }}
 	<hamburger v-model="menuOpened"></hamburger>
 	Hello World!<br/>
 	This is a demo page <br/>
 	{{ phpver }} <br/>
 	<demo str="demo Vue component"></demo>
+
+	{% if user %}
+		Hello user #{{ user.id }} named "{{ user.username }}"
+		<a href="{{ url_for("auth.logout") }}">Log out</a>
+	{% else %}
+		<a href="{{ url_for("auth.login") }}">Log in</a>
+	{% endif %}
 {% endblock %}

@@ -7,17 +7,11 @@ use Illuminate\Database\QueryException;
 
 class User extends Model{
 //	protected $table = "users";
-	protected $fillable = ["username", "password"];
+	protected $fillable = ["email", "username", "password"];
 
 	public function roles(){
-		/*return $this->hasManyThrough(
-			Role::class, UserRole::class,
-			"user_id", "id",
-			"id", "role_id"
-		);*/
 		return $this->belongsToMany(Role::class)
 		->using(UserRole::class)
-//		->as("granted")
 		->withTimestamps();
 	}
 
@@ -37,6 +31,14 @@ class User extends Model{
 
 	public function remember(){
 		return $this->hasOne(UserRemember::class);
+	}
+
+	public function twoFactor(){
+		return $this->hasOne(TwoFactor::class);
+	}
+
+	public function requires2FA(): bool{
+		return $this->twoFactor()->exists();
 	}
 
 	public function isAdmin(): bool{
@@ -79,13 +81,14 @@ class User extends Model{
 
 	/**
 	 * Create a new user
+	 * @param string $email
 	 * @param string $username
 	 * @param string $passwordHash
 	 * @return User
-	 * @throws QueryException
 	 */
-	public static function make(string $username, string $passwordHash): self{
+	public static function make(string $email, string $username, string $passwordHash): self{
 		return self::create([
+			"email" => $email,
 			"username" => $username,
 			"password" => $passwordHash
 		]);

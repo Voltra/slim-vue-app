@@ -11,4 +11,5 @@ use function App\Filters\composeFilters;
  * @var Slim\App $app
  */
 
-$app->get("/vmb/{user}", Routing::cm(\App\Controllers\DemoController::class, "vmb"));
+$app->get("/rmb/{__user}", Routing::cm(\App\Controllers\DemoController::class, "vmb"))
+	->setName("demo3");

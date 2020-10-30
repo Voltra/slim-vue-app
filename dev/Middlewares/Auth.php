@@ -26,7 +26,7 @@ class Auth extends Middleware
 		//TODO: Check if this still works after migrating to SlimV4 middlewares
 
 		$rawResponse = $handler->handle($req);
-		$response = $this->responseUpgrader->upgrade($rawResponse);
+		$response = $this->responseUtils->upgrade($rawResponse);
 		return $this->auth->loginfromRemember($req, $response)->response;
 	}
 }

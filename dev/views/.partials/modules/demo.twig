@@ -1,0 +1,73 @@
+{% macro navLink(text, name, param = {}, qs = {}) %}
+	{% if is_current_url(name, param, qs) %}
+		{{ text }}
+	{% else %}
+		<a href="{{ url_for(name, param, qs) }}">
+			{{ text }}
+		</a>
+	{% endif %}
+{% endmacro %}
+
+{% from module("demo") import navLink %}
+
+{% set routes = [
+	{
+		text: 'Demo',
+		name: 'home',
+		param: {}
+	},
+	{
+		text: 'Demo path parameter binding',
+		name: 'demo2',
+		param: {
+			user: "iamuser"
+		}
+	},
+	{
+		text: 'Force login (as "test")',
+		name: 'auth.force_login',
+		param: {
+			__user: "test"
+		}
+	},
+	{
+		text: 'Demo route-model binding (success for "test")',
+		name: 'demo3',
+		param: {
+			__user: "test"
+		}
+	},
+	{
+		text: 'Demo route-model binding (failure for "does_not_exist")',
+		name: 'demo3',
+		param: {
+			__user: "does_not_exist"
+		}
+	},
+	{
+		text: 'Routes that accept redirects : /redirectable?redir=https://google.fr',
+		name: 'redirectable',
+		qs: {
+			redir: "https://google.fr"
+		}
+	},
+	{
+		text: 'QR code (needs auth as "test")',
+		name: 'demo.2fa',
+		param: {
+			__user: "test"
+		}
+	},
+] %}
+
+<hr/>
+<nav style="display: block; width: 100%;">
+	<ul style="display: block; width: 100%;">
+		{% for route in routes %}
+			<li style="display: block; width: 100%;">
+				{{ navLink(route.text, route.name, route.param|default({}), route.qs|default({})) }}
+			</li>
+		{% endfor %}
+	</ul>
+</nav>
+<hr/>

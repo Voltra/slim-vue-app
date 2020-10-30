@@ -1,4 +1,5 @@
 {
+  "2fa.js": "/assets/js/2fa.bundle.js",
   "demo.css": "/assets/css/demo.css",
   "demo.js": "/assets/js/demo.bundle.js",
   "css/demo.css.gz": "/assets/css/demo.css.gz",
@@ -7,5 +8,6 @@
   "img/favicons/favicon-32x32.png": "/assets/img/favicons/favicon-32x32.png",
   "img/favicons/favicon.ico": "/assets/img/favicons/favicon.ico",
   "img/favicons/favicon.ico.gz": "/assets/img/favicons/favicon.ico.gz",
+  "js/2fa.bundle.js.gz": "/assets/js/2fa.bundle.js.gz",
   "js/demo.bundle.js.gz": "/assets/js/demo.bundle.js.gz"
 }
