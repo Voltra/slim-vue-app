@@ -4,8 +4,11 @@
 namespace App\Controllers;
 
 
+use App\Actions\FileSystem;
 use App\Actions\TwoFactor;
+use App\Helpers\Path;
 use App\Models\User;
+use League\Flysystem\Adapter\Local;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -22,8 +25,13 @@ class DemoController extends Controller
 	 */
 	public function home(Response $response, Request $request){
 		// thx to the PHP-DI bridge, we can inject arguments however we want
+
+		$fs = $this->container->get(FileSystem::class);
+		$json = $fs->for(Local::class)->read("demo.json");
+
 		return $this->view->render($response, "demo.twig", [
-			"phpver" => phpversion()
+			"phpver" => phpversion(),
+			"json" => $json,
 		]);
 	}
 

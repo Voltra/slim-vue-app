@@ -48,7 +48,9 @@
 		"bryanjhv/slim-session": "^4.1",
 		"lukasoppermann/http-status": "^2.0",
 		"kelunik/two-factor": "^1.1",
-		"robthree/twofactorauth": "^1.7"
+		"robthree/twofactorauth": "^1.7",
+		"league/flysystem": "^1.1",
+		"voltra/lazy-collection": "^1.0"
     },
 	"require-dev": {
 		"phpunit/phpunit": "^9.3",
