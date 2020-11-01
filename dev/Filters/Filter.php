@@ -60,11 +60,11 @@ abstract class Filter extends Middleware
 			$res = new Response();
 			$status = $this->redirectStatus();
 
-			if(is_null($status))
+			if($status !== null)
 				return $this->responseUtils->redirectWith(
 					$res,
 					$this->redirectURL(),
-					$this->redirectStatus()
+					$status
 				);
 			else
 				return $this->responseUtils->redirect(

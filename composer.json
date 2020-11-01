@@ -12,7 +12,8 @@
 	"minimum-stability": "stable",
 	"autoload": {
 		"files": [
-			"dev/Filters/ComposedFilter.php"
+			"dev/Filters/ComposedFilter.php",
+			"dev/Middlewares/Requires2FA.php"
 		],
 		"psr-4": {
 			"App\\": "dev",

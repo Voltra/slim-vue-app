@@ -13,10 +13,19 @@ use App\Models\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Response;
 use function App\Filters\filter;
+use function App\Middlewares\requires2FA;
 
 $forVisitor = filter(VisitorFilter::class);
 $forUser = filter(UserFilter::class);
 $forLogout = filter(LogoutFilter::class);
+/*$requires2FA = \App\Middlewares\Requires2FA::from($app->getContainer(), [
+	"username" => "username",
+	"code" => "2fa",
+]);*/
+$requires2FA = requires2FA([
+	"username" => "username",
+	"code" => "2fa",
+]);
 
 $app->get("/auth/login", cm(
 	AuthController::class,
@@ -34,6 +43,7 @@ $app->post("/auth/login", cm(
 	AuthController::class,
 	"login"
 ))->setName("auth.login.post")
+->add($requires2FA)
 ->add($forVisitor);
 
 $app->post("/auth/register", cm(
