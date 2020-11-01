@@ -154,16 +154,16 @@ class Auth extends Action
 	 * @param string $username
 	 * @param string $password
 	 * @param bool $remember
-	 * @param string $tfaCode
+//	 * @param string $tfaCode
 	 * @return UserResponsePair
 	 */
-	public function login(Response $res, string $username, string $password, bool $remember = false, string $tfaCode = ""): UserResponsePair
+	public function login(Response $res, string $username, string $password, bool $remember = false/*, string $tfaCode = ""*/): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
 		$shouldAccept = $user
 			&& $this->hash->checkPassword($password, $user->password)
-			&& $this->handle2FA($user, $tfaCode);
+			/*&& $this->handle2FA($user, $tfaCode)*/;
 
 		if ($shouldAccept) {
 			$ret = $this->logout($res);
