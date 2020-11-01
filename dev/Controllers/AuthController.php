@@ -62,7 +62,6 @@ class AuthController extends Controller
 		$username = $data["username"] ?? "";
 		$password = $data["password"] ?? "";
 		$remember = $data["remember"] ?? false;
-		$code = $data["2fa"] ?? "";
 
 		$res = $this->responseUtils->upgrade($response);
 
@@ -70,8 +69,7 @@ class AuthController extends Controller
 			$res,
 			$username,
 			$password,
-			$remember,
-			$code
+			$remember
 		)->asArray();
 
 		if($user === null){

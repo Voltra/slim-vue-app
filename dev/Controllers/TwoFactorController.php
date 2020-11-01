@@ -40,6 +40,7 @@ class TwoFactorController extends Controller
 	 * @param User $user
 	 * @param TwoFactor $tfa
 	 * @return Response
+	 * @throws \RobThree\Auth\TwoFactorAuthException
 	 */
 	public function enable2FA(Response $response, User $user, TwoFactor $tfa){
 		$tfa->enable2FA($user);
