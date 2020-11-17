@@ -6,6 +6,8 @@ namespace App\Controllers;
 
 use App\Actions\FileSystem;
 use App\Actions\TwoFactor;
+use App\Events\DemoEvent;
+use App\Events\Events;
 use App\Helpers\Path;
 use App\Models\User;
 use League\Flysystem\Adapter\Local;
@@ -28,6 +30,8 @@ class DemoController extends Controller
 
 		$fs = $this->container->get(FileSystem::class);
 		$json = $fs->for(Local::class)->read("demo.json");
+
+		Events::trigger(new DemoEvent("world"));
 
 		return $this->view->render($response, "demo.twig", [
 			"phpver" => phpversion(),

@@ -11,6 +11,8 @@ $db = $setupDb($config);
 $app = \DI\Bridge\Slim\Bridge::create($container);
 $container->set(\Slim\App::class, $app);
 
+require("listeners.php");
+
 $applyMiddlewares = require_once("middlewares.php");
 $applyMiddlewares($app, $container, $config, $settings);
 
