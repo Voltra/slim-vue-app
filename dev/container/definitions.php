@@ -35,6 +35,15 @@ function autowired(array $classes): array{
 	}, $classes), "array_merge", []);
 }
 
+/**
+ * @param string|null $class
+ * @param mixed ...$args
+ * @return \DI\Definition\Helper\CreateDefinitionHelper
+ */
+function construct(?string $class = null, ...$args){
+	return \DI\create($class)->constructor(...$args);
+}
+
 /******************************************************************************************************************\
  * Via keys
 \******************************************************************************************************************/
@@ -128,6 +137,7 @@ $viaClassStrings = [
 	\League\Flysystem\Adapter\Local::class => static function(Container $container){
 		return new \League\Flysystem\Adapter\Local(Path::uploads());
 	},
+	\Illuminate\Events\Dispatcher::class => construct(\Illuminate\Events\Dispatcher::class),
 ];
 
 
