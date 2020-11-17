@@ -15,17 +15,32 @@ abstract class Events
 	 * Trigger an event
 	 * @param Event $event - The event to trigger
 	 * @param array $payload - The optional payload of data to pass along
-	 * @param bool $halt - Whether or not to halt
 	 * @return Event
 	 * @throws DependencyException
 	 * @throws NotFoundException
 	 */
-	public static function trigger(Event $event, $payload = [], bool $halt = false){
+	public static function trigger(Event $event, $payload = []){
 		/**
 		 * @var Dispatcher $dispatcher
 		 */
 		$dispatcher = resolve(Dispatcher::class);
-		$dispatcher->dispatch($event, $payload, $halt);
+		$dispatcher->dispatch($event, $payload,false);
+		return $event;
+	}
+
+	/**
+	 * Trigger the event only if the given condition is true
+	 * @param bool $condition - The condition to trigger the event
+	 * @param Event $event - The event to trigger
+	 * @param array $payload - The additional payload of data
+	 * @return Event
+	 * @throws DependencyException
+	 * @throws NotFoundException
+	 */
+	public static function triggerIf(bool $condition, Event $event, $payload = []){
+		if($condition)
+			static::trigger($event, $payload);
+
 		return $event;
 	}
 

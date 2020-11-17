@@ -8,8 +8,9 @@ interface EventListener
 {
 	/**
 	 * Handle the event
-	 * @param Event $event
+	 * @psalm-template  T of Event
+	 * @param T|object $event
 	 * @return mixed
 	 */
-	public function handle(/*Event*/ $event);
+	public function handle(object $event);
 }

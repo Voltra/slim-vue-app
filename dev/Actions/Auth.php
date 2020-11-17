@@ -2,10 +2,16 @@
 
 namespace App\Actions;
 
+use App\Events\Events;
+use App\Events\User\UserCreated;
+use App\Events\User\UserLoggedIn;
+use App\Events\User\UserLoggedOut;
 use App\Helpers\UserResponsePair;
 use App\Models\User;
 use App\Models\UserRemember;
 use Carbon\Carbon;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Illuminate\Database\QueryException;
 use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,6 +62,8 @@ class Auth extends Action
 
 	/**
 	 * Syncs the container state's with the session's
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
 	protected function syncContainerAndSession(): void
 	{
@@ -77,7 +85,8 @@ class Auth extends Action
 	/**
 	 * Determines whether or not a user is logged in
 	 * @return bool
-	 * @throws ContainerException
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
 	public function isLoggedIn(): bool
 	{
@@ -89,7 +98,8 @@ class Auth extends Action
 	/**
 	 * Fetches the current logged in user
 	 * @return User|null
-	 * @throws ContainerException
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
 	public function user(): ?User
 	{
@@ -99,6 +109,12 @@ class Auth extends Action
 		return null;
 	}
 
+	/**
+	 * Determine whether or not the logged in user is admin
+	 * @return bool
+	 * @throws DependencyException
+	 * @throws NotFoundException
+	 */
 	public function isAdmin(): bool
 	{
 		if (!$this->isLoggedIn())
@@ -111,7 +127,8 @@ class Auth extends Action
 	 * Determines whether or not the user is logged as the on with the given username
 	 * @param string $username
 	 * @return bool
-	 * @throws ContainerException
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
 	public function isLoggedAs(string $username): bool
 	{
@@ -154,10 +171,12 @@ class Auth extends Action
 	 * @param string $username
 	 * @param string $password
 	 * @param bool $remember
-//	 * @param string $tfaCode
+	 * @param bool $emitEvents
 	 * @return UserResponsePair
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
-	public function login(Response $res, string $username, string $password, bool $remember = false/*, string $tfaCode = ""*/): UserResponsePair
+	public function login(Response $res, string $username, string $password, bool $remember = false, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
@@ -166,19 +185,27 @@ class Auth extends Action
 			/*&& $this->handle2FA($user, $tfaCode)*/;
 
 		if ($shouldAccept) {
-			$ret = $this->logout($res);
+			$ret = $this->logout($res, false);
 			$this->container->set($this->containerKey, $user);
 
 			if ($remember)
 				$ret = $this->remember($ret);
 
 			$this->syncContainerAndSession();
+			Events::triggerIf($emitEvents, new UserLoggedIn($user));
 			return new UserResponsePair($ret, $user);
 		}
 
 		return new UserResponsePair($res, null);
 	}
 
+	/**
+	 * Setup client data to remember the logged in user
+	 * @param Response $res - The current response
+	 * @return Response
+	 * @throws DependencyException
+	 * @throws NotFoundException
+	 */
 	public function remember(Response $res): Response
 	{
 		$this->syncContainerAndSession();
@@ -203,18 +230,23 @@ class Auth extends Action
 	 * Forces login with the given username
 	 * @param Response $res
 	 * @param string $username
+	 * @param bool $emitEvents
 	 * @return UserResponsePair
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
-	public function forceLogin(Response $res, string $username): UserResponsePair
+	public function forceLogin(Response $res, string $username, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
 		$ret = $res;
 
-		if ($user) {
-			$ret = $this->logout($res);
+		if ($user !== null) {
+			$ret = $this->logout($res, false);
 			$this->container->set($this->containerKey, $user);
 			$this->syncContainerAndSession();
+
+			Events::triggerIf($emitEvents, new UserLoggedIn($user));
 		}
 
 		return new UserResponsePair($ret, $user);
@@ -223,14 +255,21 @@ class Auth extends Action
 	/**
 	 * Logs out the current user
 	 * @param Response $res
+	 * @param bool $emitEvents
 	 * @return Response
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
-	public function logout(Response $res): Response
+	public function logout(Response $res, bool $emitEvents = true): Response
 	{
+		$user = $this->user();
 		$res = $this->cookies->expire($res, $this->cookieName);
 		//		$res = $this->cookies->remove($res, $this->cookieName);
 		$this->session->delete($this->sessionKey);
 		$this->container->set($this->containerKey, null); //TODO: Find a way to remove from container
+
+		Events::triggerIf($emitEvents && $user !== null, new UserLoggedOut($user));
+
 		return $res;
 	}
 
@@ -241,13 +280,18 @@ class Auth extends Action
 	 * @param string $username
 	 * @param string $password
 	 * @param bool $remember
+	 * @param bool $emitEvents
 	 * @return UserResponsePair
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
-	public function register(Response $res, string $email, string $username, string $password, bool $remember = false): UserResponsePair
+	public function register(Response $res, string $email, string $username, string $password, bool $remember = false, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		try {
 			$user = User::make($email, $username, $this->hash->hashPassword($password));
+
+			Events::triggerIf($emitEvents, new UserCreated($user));
 		} catch (QueryException $e) {
 			return new UserResponsePair($res, null);
 		}
@@ -258,10 +302,12 @@ class Auth extends Action
 	 * Attempt to login from remember credentials in a cookie
 	 * @param ServerRequestInterface $rq
 	 * @param Response $res
+	 * @param bool $emitEvents
 	 * @return UserResponsePair
-	 * @throws ContainerException
+	 * @throws DependencyException
+	 * @throws NotFoundException
 	 */
-	public function loginfromRemember(ServerRequestInterface $rq, Response $res): UserResponsePair
+	public function loginfromRemember(ServerRequestInterface $rq, Response $res, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$hasCookie = $this->cookies->has($rq, $this->cookieName);
@@ -284,6 +330,6 @@ class Auth extends Action
 			return $emptyRes;
 
 		$user = $rem->user;
-		return $this->forceLogin($res, $user->username);
+		return $this->forceLogin($res, $user->username, $emitEvents);
 	}
 }

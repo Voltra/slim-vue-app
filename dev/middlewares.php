@@ -2,7 +2,9 @@
 
 use App\Handlers\ExceptionHandler;
 use App\Handlers\LegacyPhpErrorHandler;
+use DI\Container;
 use Middlewares\TrailingSlash;
+use Slim\App;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\Middleware\ContentLengthMiddleware;
 use Slim\Middleware\MethodOverrideMiddleware;
@@ -18,14 +20,14 @@ function handleError($app){
 		$container = $app->getContainer();
 		$response = new Response();
 		//TODO: Custom error handling
-		//TODO: Custom rendering for deifferent status
+		//TODO: Custom rendering for different status
 
 		$status = 404;
 		return $container->view->render($response->withStatus($status), "errors/$status.twig", []);
 	};
 }
 
-return static function(\Slim\App $app, \DI\Container $container, $config, $settings){
+return static function(App $app, Container $container, $config, $settings){
 	$displayErrorDetails = $settings["displayErrorDetails"];
 	$logErrors = $settings["logErrors"];
 	$logErrorDetails = $settings["logErrorDetails"];
