@@ -14,8 +14,9 @@ $container = $builder->build();
 
 /**
  * Resolve a dependency using the DI container
- * @param class-string|string $key
- * @return mixed
+ * @template T
+ * @param class-string<T>|string $key
+ * @return T|mixed
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException
  */
