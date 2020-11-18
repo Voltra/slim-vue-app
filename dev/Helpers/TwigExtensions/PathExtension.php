@@ -32,6 +32,7 @@ class PathExtension extends AbstractExtension
 		return [
 			new TwigFunction("partial", [$this, "partial"]),
 			new TwigFunction("layout", [$this, "layout"]),
+			new TwigFunction("mailLayout", [$this, "mailLayout"]),
 			new TwigFunction("module", [$this, "module"]),
 			new TwigFunction("fromManifest", [$this, "fromManifest"]),
 			new TwigFunction("manifest", [$this, "fromManifest"]),
@@ -46,6 +47,10 @@ class PathExtension extends AbstractExtension
 	public function layout(): string
 	{
 		return $this->partial("layout");
+	}
+
+	public function mailLayout(): string{
+		return $this->partial("mail");
 	}
 
 	public function module(string $path): string

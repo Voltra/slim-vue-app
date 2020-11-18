@@ -1,4 +1,7 @@
 <?php
+//for emails: https://odan.github.io/2020/04/11/slim4-sending-emails.html
+// https://packagist.org/packages/qferr/mjml-twig
+
 require_once "../vendor/autoload.php";
 require_once "env.php";
 
