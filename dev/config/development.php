@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Path;
+use Illuminate\Support\Env;
 use Monolog\Logger;
 
 return [
@@ -76,5 +77,21 @@ return [
 		"period" => 30,
 		"qr_provider" => \RobThree\Auth\Providers\Qr\ImageChartsQRCodeProvider::class,
 		"label_field" => "username",
+	],
+	"mail" => [
+		"type" => "smtp",
+		"host" => "smtp.mailtrap.io",
+		"port" => "2525",
+		"username" => Env::get("MAIL_USERNAME", ""),
+		"password" => Env::get("MAIL_PASSWORD", ""),
+		"mjml_exe" => Path::root("/node_modules/.bin/mjml"),
+		"from" => [
+			"addr" => "admin@slim-vue-app.ninja",
+			"name" => "Slim Vue App",
+		],
+		"reply_to" => [
+			"addr" => "no-reply@slim-vue-app.ninja",
+			"name" => "Slim Vue App",
+		],
 	],
 ];

@@ -18,10 +18,6 @@ use function App\Middlewares\requires2FA;
 $forVisitor = filter(VisitorFilter::class);
 $forUser = filter(UserFilter::class);
 $forLogout = filter(LogoutFilter::class);
-/*$requires2FA = \App\Middlewares\Requires2FA::from($app->getContainer(), [
-	"username" => "username",
-	"code" => "2fa",
-]);*/
 $requires2FA = requires2FA([
 	"username" => "username",
 	"code" => "2fa",
@@ -58,6 +54,7 @@ $app->get("/auth/logout", cm(
 ))->setName("auth.logout")
 ->add($forLogout);
 
+//DEMO
 $app->get("/auth/force-login/{__user}", function(ServerRequestInterface $req,  Response $res, User $user){
 	/**
 	 * @var Auth $auth

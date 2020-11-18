@@ -2,6 +2,7 @@
 
 namespace App\Config;
 
+use Illuminate\Support\Env;
 use Noodlehaus\Config as HassankhanConfig;
 use Monolog\Logger;
 
@@ -76,6 +77,22 @@ class Config extends HassankhanConfig
 				"period" => 30,
 				"qr_provider" => \RobThree\Auth\Providers\Qr\ImageChartsQRCodeProvider::class,
 				"label_field" => "email",
+			],
+			"mail" => [
+				"type" => "smtp",
+				"host" => "",
+				"port" => "25",
+				"username" => Env::get("MAIL_USERNAME", ""),
+				"password" => Env::get("MAIL_PASSWORD", ""),
+				"mjml_exe" => "mjml",
+				"from" => [
+					"addr" => "",
+					"name" => "",
+				],
+				"reply_to" => [
+					"addr" => "",
+					"name" => "",
+				],
 			],
 		];
 	}

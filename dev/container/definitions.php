@@ -6,6 +6,7 @@ use App\Helpers\Path;
 use App\Helpers\TwigExtensions\AuthExtension;
 use App\Helpers\TwigExtensions\CsrfExtension;
 use App\Helpers\TwigExtensions\FlashExtension;
+use App\Helpers\TwigExtensions\MjmlExtension;
 use App\Helpers\TwigExtensions\PathExtension;
 use DI\Container;
 use Illuminate\Filesystem\Filesystem;
@@ -84,6 +85,7 @@ $viaKeys = [
 
 		$flash = $container->get("flash");
 
+		$view->addExtension(resolve(MjmlExtension::class));
 		$view->addExtension(new FlashExtension($flash));
 		$view->addExtension(new CsrfExtension($container));
 		$view->addExtension(new PathExtension($container));
@@ -138,6 +140,51 @@ $viaClassStrings = [
 		return new \League\Flysystem\Adapter\Local(Path::uploads());
 	},
 	\Illuminate\Events\Dispatcher::class => construct(\Illuminate\Events\Dispatcher::class),
+	\Qferrer\Mjml\Renderer\BinaryRenderer::class => static function(Container $container){
+		/**
+		 * @var Config $config
+		 */
+		$config = $container->get("config");
+		return new \Qferrer\Mjml\Renderer\BinaryRenderer($config["mail.mjml_exe"]);
+	},
+	\Qferrer\Mjml\Renderer\RendererInterface::class => \DI\get(\Qferrer\Mjml\Renderer\BinaryRenderer::class),
+	\Symfony\Component\Mailer\Transport::class => static function(Container $container){
+		/**
+		 * @var Config $config
+		 */
+		$config = $container->get("config");
+		$mail = $config["mail"];
+
+		[
+			$type,
+			$username,
+			$password,
+			$host,
+			$port,
+		] = [
+			$mail["type"],
+			$mail["username"],
+			$mail["password"],
+			$mail["host"],
+			$mail["port"],
+		];
+
+		$dsn = "{$type}://{$username}:{$password}@{$host}:{$port}";
+		return \Symfony\Component\Mailer\Transport::fromDsn($dsn);
+	},
+	\Symfony\Component\Mailer\Transport\TransportInterface::class => \DI\get(\Symfony\Component\Mailer\Transport::class),
+	\Symfony\Component\Mailer\Mailer::class => static function(Container $container){
+		return new \Symfony\Component\Mailer\Mailer($container->get(\Symfony\Component\Mailer\Transport\TransportInterface::class));
+	},
+	\Symfony\Component\Mailer\MailerInterface::class => \DI\get(\Symfony\Component\Mailer\Mailer::class),
+	\Symfony\Bridge\Twig\Mime\BodyRenderer::class => static function(Container $container){
+		/**
+		 * @var Twig
+		 */
+		$view = $container->get(Twig::class);
+		return new \Symfony\Bridge\Twig\Mime\BodyRenderer($view->getEnvironment());
+	},
+	\Symfony\Component\Mime\BodyRendererInterface::class => \DI\get(\Symfony\Bridge\Twig\Mime\BodyRenderer::class),
 ];
 
 

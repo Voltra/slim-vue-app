@@ -1,0 +1,47 @@
+{#
+Payload:
+	- msg
+		- subject (?string)
+		- title (?string)
+		- from (array)
+			- name (string)
+			- addr (string)
+		- to (array)
+			- name (string)
+			- addr (string)
+		- replyTo (array)
+			- name (string)
+			- addr (string)
+		- cc (array)
+			- name (string)
+			- addr (string)
+		- date (DateTimeInterface)
+
+Blocks:
+	- mjmlAttr
+	- title
+	- mjAttributes
+	- head
+	- bodyAttr
+	- body
+#}
+
+{% apply mjml_to_html %}
+	<mjml {% block mjmlAttr %}{% endblock%}>
+		<mj-head>
+			<mj-title>{% block title %}{{ msg.subject|default(msg.title) }}{% endblock %}</mj-title>
+
+			<mj-attributes>
+				{% block mjAttributes %}
+				{% endblock %}
+			</mj-attributes>
+
+			{% block head %}
+			{% endblock %}
+		</mj-head>
+		<mj-body {% block bodyAttr %}{% endblock %}>
+			{% block body %}
+			{% endblock %}
+		</mj-body>
+	</mjml>
+{% endapply %}

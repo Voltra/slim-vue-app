@@ -52,7 +52,10 @@
 		"robthree/twofactorauth": "^1.7",
 		"league/flysystem": "^1.1",
 		"voltra/lazy-collection": "^1.0",
-		"illuminate/events": "^8.15"
+		"illuminate/events": "^8.15",
+		"symfony/mailer": "^5.1",
+		"qferr/mjml-php": "^1.0",
+		"symfony/twig-bridge": "^5.1"
     },
 	"require-dev": {
 		"phpunit/phpunit": "^9.3",
