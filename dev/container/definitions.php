@@ -194,7 +194,6 @@ $viaClassStrings = [
  * Actions
 \******************************************************************************************************************/
 $actions = autowired([
-	\App\Actions\PostValidator::class,
 	\App\Actions\Response::class,
 	\App\Actions\Hash::class,
 	\App\Actions\Random::class,
@@ -204,6 +203,7 @@ $actions = autowired([
 	\App\Actions\Auth::class,
 	\App\Actions\TwoFactor::class,
 	\App\Actions\FileSystem::class,
+	\App\Actions\Validator::class,
 ]);
 
 
