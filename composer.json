@@ -56,7 +56,8 @@
 		"symfony/mailer": "^5.1",
 		"qferr/mjml-php": "^1.0",
 		"symfony/twig-bridge": "^5.1",
-		"rikudou/enums-trait": "^1.0"
+		"rikudou/enums-trait": "^1.0",
+		"rakit/validation": "^1.4"
     },
 	"require-dev": {
 		"phpunit/phpunit": "^9.3",
