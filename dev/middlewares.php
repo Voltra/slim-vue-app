@@ -1,6 +1,6 @@
 <?php
 
-use App\Handlers\ExceptionHandler;
+use App\Handlers\UnhandledExceptionHandler;
 use App\Handlers\LegacyPhpErrorHandler;
 use DI\Container;
 use Middlewares\TrailingSlash;
@@ -46,9 +46,10 @@ return static function(App $app, Container $container, $config, $settings){
 	->add(\App\Middlewares\Csrf::from($container))
 	->add(\App\Middlewares\Auth::from($container))
 	->add(\App\Middlewares\RequestBinding::from($container)) // Add request to the container
-	->add(new WhoopsMiddleware());
+	->add(new WhoopsMiddleware())
+	->add(\App\Middlewares\UniformErrorHandling::from($container));
 
-	$eh = new ExceptionHandler($app->getCallableResolver(), $app->getResponseFactory());
+	$eh = new UnhandledExceptionHandler($app->getCallableResolver(), $app->getResponseFactory());
 	$request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();
 	$lh = new LegacyPhpErrorHandler($request, $eh, $displayErrorDetails, $logErrors, $logErrorDetails);
 	register_shutdown_function($lh);

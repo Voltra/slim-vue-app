@@ -94,4 +94,7 @@ return [
 			"name" => "Slim Vue App",
 		],
 	],
+	"errors" => [
+		"delegate" => true,
+	],
 ];

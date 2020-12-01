@@ -14,7 +14,7 @@ class LegacyPhpErrorHandler
 	 */
 	protected $request;
 	/**
-	 * @var ExceptionHandler
+	 * @var UnhandledExceptionHandler
 	 */
 	protected $exceptionHandler;
 	/**
@@ -36,14 +36,14 @@ class LegacyPhpErrorHandler
 
 	/**
 	 * @param Request $request
-	 * @param ExceptionHandler $exceptionHandler
+	 * @param UnhandledExceptionHandler $exceptionHandler
 	 * @param bool $displayErrorDetails
 	 * @param bool $logErrors
 	 * @param bool $logErrorDetails
 	 * @throws \DI\DependencyException
 	 * @throws \DI\NotFoundException
 	 */
-	public function __construct(Request $request, ExceptionHandler $exceptionHandler, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails){
+	public function __construct(Request $request, UnhandledExceptionHandler $exceptionHandler, bool $displayErrorDetails, bool $logErrors, bool $logErrorDetails){
 		$this->request = $request;
 		$this->exceptionHandler = $exceptionHandler;
 		$this->displayErrorDetails = $displayErrorDetails;

@@ -4,12 +4,12 @@
 namespace App\Handlers;
 
 
+use App\Config\Config;
 use App\Helpers\AppEnv;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
-use Slim\Exception\HttpException;
 use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Exception\HttpUnauthorizedException;
@@ -20,17 +20,29 @@ use Slim\Views\Twig;
 
 //cf. https://www.slimframework.com/docs/v4/objects/application.html#advanced-custom-error-handler
 
-class ExceptionHandler extends ErrorHandler
+class UnhandledExceptionHandler extends ErrorHandler
 {
 	/**
 	 * @var Twig
 	 */
 	protected $view;
 
+	/**
+	 * @var Config
+	 */
+	protected $config;
+
+	/**
+	 * @var array
+	 */
+	protected $settings;
+
 	public function __construct(CallableResolverInterface $callableResolver, ResponseFactoryInterface $responseFactory, ?LoggerInterface $logger = null)
 	{
 		parent::__construct($callableResolver, $responseFactory, $logger);
 		$this->view = resolve(Twig::class);
+		$this->config = resolve(Config::class);
+		$this->settings = $this->config->get("errors");
 	}
 
 	protected function render(int $status, \Throwable $e){
@@ -48,10 +60,12 @@ class ExceptionHandler extends ErrorHandler
 	protected function respond(): ResponseInterface{
 		$e = $this->exception;
 
-		if(AppEnv::dev()){
+		if(AppEnv::dev() && $this->settings["delegate"]){
 			// Delegate to other middlewares in dev
 			throw $e;
-		}if($e instanceof HttpBadRequestException){
+		}
+
+		if($e instanceof HttpBadRequestException){
 			return $this->render(400, $e);
 		}else if($e instanceof HttpUnauthorizedException){
 			return $this->render(401, $e);
