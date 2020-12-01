@@ -13,6 +13,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Interfaces\RouteParserInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
+use Throwable;
 
 //TODO: Rework to use Slim4 middlewares
 
@@ -56,7 +57,12 @@ abstract class Filter extends Middleware
 
 	public function process(ServerRequestInterface $req, RequestHandlerInterface $handler): ResponseInterface
 	{
-		if (!$this->isAuthorized()) {
+		$isAuthorized = false;
+		try{
+			$isAuthorized = !$this->isAuthorized();
+		}catch(Throwable $e){}
+
+		if ($isAuthorized) {
 			$res = new Response();
 			$status = $this->redirectStatus();
 

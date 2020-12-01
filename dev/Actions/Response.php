@@ -26,6 +26,15 @@ class Response extends Action
 		return $this->redirect($res->withStatus($status), $location);
 	}
 
+	/**
+	 * @param ResponseInterface $res
+	 * @param string $route
+	 * @param array $params
+	 * @param array $qs
+	 * @return ResponseInterface
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
+	 */
 	public function redirectToRoute(ResponseInterface $res, string $route, array $params = [], array $qs = []){
 		$parser = $this->container->get(RouteParser::class);
 		$url = $parser->urlFor($route, $params, $qs);

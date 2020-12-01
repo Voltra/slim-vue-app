@@ -1,6 +1,5 @@
 <?php
 
-use App\Exceptions\Invalid2FA;
 use App\Handlers\UniformErrorHandler;
 use DI\Container;
 use Psr\Container\ContainerExceptionInterface;
@@ -10,7 +9,7 @@ use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Psr7\Response;
 
 function doThrow(string $class = HttpInternalServerErrorException::class): callable{
-	return function(Throwable $e, Request $req) use ($class) {
+	return function(Throwable $e, Request $req) use ($class): Response {
 		throw new $class();
 	};
 }
