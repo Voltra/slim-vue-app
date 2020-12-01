@@ -12,9 +12,13 @@ class Validator extends Action
 	public function make(ServerRequestInterface $req, array $rules, array $messages = []): Validation
 	{
 		$validator = new \Rakit\Validation\Validator($messages);
-		$data = $req->getParsedBody();
-		$data += $req->getQueryParams();
-		$data += $req->getUploadedFiles();
+
+		$data = array_merge(
+			$req->getQueryParams(),
+			$req->getParsedBody(),
+			$req->getUploadedFiles()
+		);
+
 		return $validator->make($data, $rules, $messages);
 	}
 }
