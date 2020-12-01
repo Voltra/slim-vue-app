@@ -6,6 +6,12 @@ use App\Events\Events;
 use App\Events\User\UserCreated;
 use App\Events\User\UserLoggedIn;
 use App\Events\User\UserLoggedOut;
+use App\Exceptions\CannotRegisterUser;
+use App\Exceptions\Invalid2FA;
+use App\Exceptions\InvalidLoginAttempt;
+use App\Exceptions\InvalidRememberLogin;
+use App\Exceptions\ReplayAttack2FA;
+use App\Exceptions\UserDoesNotExist;
 use App\Helpers\UserResponsePair;
 use App\Models\User;
 use App\Models\UserRemember;
@@ -58,28 +64,6 @@ class Auth extends Action
 
 		if (!$this->user())
 			$this->container->set($this->containerKey, null);
-	}
-
-	/**
-	 * Syncs the container state's with the session's
-	 * @throws DependencyException
-	 * @throws NotFoundException
-	 */
-	protected function syncContainerAndSession(): void
-	{
-		if ($this->session->exists($this->sessionKey))
-			//always sync in case of user hotswap
-			$this->container->set(
-				$this->containerKey,
-				User::find($this->session->get($this->sessionKey))
-			);
-		else if ($this->container->has($this->containerKey)){
-			$user = $this->container->get($this->containerKey);
-			if($user === null)
-				return; //temp fix because interfaces do not have a way to delete from containers
-
-			$this->session->set($this->sessionKey, $user->id);
-		}
 	}
 
 	/**
@@ -140,12 +124,16 @@ class Auth extends Action
 		return $user->username === $username;
 	}
 
-	public function handle2FA(User $user, string $code): bool{
-		//TODO: Throw exception when trying to replay code
-		//TODO: Throw exception when code is invalid
-
+	/**
+	 * Handle 2FA checks
+	 * @param User $user - The user to handle 2FA for
+	 * @param string $code - The submitted code
+	 * @throws ReplayAttack2FA
+	 * @throws Invalid2FA
+	 */
+	public function handle2FA(User $user, string $code): void{
 		if(!$user->requires2FA())
-			return true;
+			return;
 
 		/**
 		 * @var \App\Models\TwoFactor $tfa
@@ -153,16 +141,14 @@ class Auth extends Action
 		$tfa = $user->twoFactor;
 
 		if($code === $tfa->latest_code) // avoid code replay
-			return false;
+			throw new ReplayAttack2FA();
 
 		$isValid = $this->tfa->validate($user, $code);
-		if($isValid){
-			$tfa->latest_code = $code; // avoid code replay
-			$tfa->save();
-			return true;
-		}
+		if(!$isValid)
+			throw new Invalid2FA();
 
-		return false;
+		$tfa->latest_code = $code; // avoid code replay
+		$tfa->save();
 	}
 
 	/**
@@ -175,14 +161,15 @@ class Auth extends Action
 	 * @return UserResponsePair
 	 * @throws DependencyException
 	 * @throws NotFoundException
+	 * @throws UserDoesNotExist
+	 * @throws InvalidLoginAttempt
 	 */
 	public function login(Response $res, string $username, string $password, bool $remember = false, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
 		$shouldAccept = $user
-			&& $this->hash->checkPassword($password, $user->password)
-			/*&& $this->handle2FA($user, $tfaCode)*/;
+			&& $this->hash->checkPassword($password, $user->password);
 
 		if ($shouldAccept) {
 			$ret = $this->logout($res, false);
@@ -194,9 +181,10 @@ class Auth extends Action
 			$this->syncContainerAndSession();
 			Events::triggerIf($emitEvents, new UserLoggedIn($user));
 			return new UserResponsePair($ret, $user);
-		}
-
-		return new UserResponsePair($res, null);
+		}else if($user === null)
+			throw new UserDoesNotExist();
+		else
+			throw new InvalidLoginAttempt();
 	}
 
 	/**
@@ -205,6 +193,7 @@ class Auth extends Action
 	 * @return Response
 	 * @throws DependencyException
 	 * @throws NotFoundException
+	 * @throws UserDoesNotExist
 	 */
 	public function remember(Response $res): Response
 	{
@@ -212,7 +201,7 @@ class Auth extends Action
 		$user = $this->user();
 
 		if ($user === null)
-			return $res;
+			throw new UserDoesNotExist();
 
 		$id = $this->random->generateString();
 		$token = $this->random->generateString();
@@ -220,7 +209,7 @@ class Auth extends Action
 
 		$cookie = $this->cookies->builder($this->cookieName)
 			->withValue("{$id}{$this->separator}{$token}")
-			->withExpires(Carbon::parse($this->cookieExpiry)->timestamp)
+			->withExpires(Carbon::parse($this->cookieExpiry))
 			->withHttpOnly(true);
 
 		return $this->cookies->set($res, $cookie);
@@ -234,20 +223,21 @@ class Auth extends Action
 	 * @return UserResponsePair
 	 * @throws DependencyException
 	 * @throws NotFoundException
+	 * @throws UserDoesNotExist
 	 */
 	public function forceLogin(Response $res, string $username, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$user = User::fromUsername($username);
-		$ret = $res;
 
-		if ($user !== null) {
-			$ret = $this->logout($res, false);
-			$this->container->set($this->containerKey, $user);
-			$this->syncContainerAndSession();
+		if($user === null)
+			throw new UserDoesNotExist();
 
-			Events::triggerIf($emitEvents, new UserLoggedIn($user));
-		}
+		$ret = $this->logout($res, false);
+		$this->container->set($this->containerKey, $user);
+		$this->syncContainerAndSession();
+
+		Events::triggerIf($emitEvents, new UserLoggedIn($user));
 
 		return new UserResponsePair($ret, $user);
 	}
@@ -263,14 +253,11 @@ class Auth extends Action
 	public function logout(Response $res, bool $emitEvents = true): Response
 	{
 		$user = $this->user();
-		$res = $this->cookies->expire($res, $this->cookieName);
-		//		$res = $this->cookies->remove($res, $this->cookieName);
-		$this->session->delete($this->sessionKey);
-		$this->container->set($this->containerKey, null); //TODO: Find a way to remove from container
+		$ret = $this->cleanup($res);
 
 		Events::triggerIf($emitEvents && $user !== null, new UserLoggedOut($user));
 
-		return $res;
+		return $ret;
 	}
 
 	/**
@@ -284,6 +271,9 @@ class Auth extends Action
 	 * @return UserResponsePair
 	 * @throws DependencyException
 	 * @throws NotFoundException
+	 * @throws CannotRegisterUser
+	 * @throws UserDoesNotExist
+	 * @throws InvalidLoginAttempt
 	 */
 	public function register(Response $res, string $email, string $username, string $password, bool $remember = false, bool $emitEvents = true): UserResponsePair
 	{
@@ -293,8 +283,9 @@ class Auth extends Action
 
 			Events::triggerIf($emitEvents, new UserCreated($user));
 		} catch (QueryException $e) {
-			return new UserResponsePair($res, null);
+			throw new CannotRegisterUser();
 		}
+
 		return $this->login($res, $username, $password, $remember);
 	}
 
@@ -306,8 +297,10 @@ class Auth extends Action
 	 * @return UserResponsePair
 	 * @throws DependencyException
 	 * @throws NotFoundException
+	 * @throws InvalidRememberLogin
+	 * @throws UserDoesNotExist
 	 */
-	public function loginfromRemember(ServerRequestInterface $rq, Response $res, bool $emitEvents = true): UserResponsePair
+	public function loginFromRemember(ServerRequestInterface $rq, Response $res, bool $emitEvents = true): UserResponsePair
 	{
 		$this->syncContainerAndSession();
 		$hasCookie = $this->cookies->has($rq, $this->cookieName);
@@ -317,19 +310,51 @@ class Auth extends Action
 		/**@var string $cookie*/
 		$cookie = $this->cookies->get($rq, $this->cookieName)->getValue();
 		$credentials = explode($this->separator, $cookie);
-		$emptyRes = new UserResponsePair($res, null);
 
 		if (empty(trim($cookie)) || count($credentials) !== 2)
-			return $emptyRes;
+			throw new InvalidRememberLogin();
 
 		[$id, $token] = $credentials;
 		$hashedToken = $this->hash->hash($token);
 		$rem = UserRemember::fromRID($id);
 
-		if ($rem === null || !$this->hash->checkHash($hashedToken, $rem->token()))
-			return $emptyRes;
+		if($rem === null)
+			throw new UserDoesNotExist();
+
+		if (!$this->hash->checkHash($hashedToken, $rem->token()))
+			throw new InvalidRememberLogin();
 
 		$user = $rem->user;
 		return $this->forceLogin($res, $user->username, $emitEvents);
+	}
+
+	protected function cleanup(Response $res){
+		$ret = $this->cookies->expire($res, $this->cookieName);
+		//		$ret = $this->cookies->remove($res, $this->cookieName);
+		$this->session->delete($this->sessionKey);
+		$this->container->set($this->containerKey, null); //TODO: Find a way to remove from container
+		return $ret;
+	}
+
+	/**
+	 * Syncs the container state's with the session's
+	 * @throws DependencyException
+	 * @throws NotFoundException
+	 */
+	protected function syncContainerAndSession(): void
+	{
+		if ($this->session->exists($this->sessionKey))
+			//always sync in case of user hotswap
+			$this->container->set(
+				$this->containerKey,
+				User::find($this->session->get($this->sessionKey))
+			);
+		else if ($this->container->has($this->containerKey)){
+			$user = $this->container->get($this->containerKey);
+			if($user === null)
+				return; //temp fix because interfaces do not have a way to delete from containers
+
+			$this->session->set($this->sessionKey, $user->id);
+		}
 	}
 }

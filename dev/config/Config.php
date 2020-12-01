@@ -94,6 +94,9 @@ class Config extends HassankhanConfig
 					"name" => "",
 				],
 			],
+			"errors" => [
+				"delegate" => false,
+			],
 		];
 	}
 }

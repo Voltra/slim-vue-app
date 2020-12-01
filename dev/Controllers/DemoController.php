@@ -5,6 +5,7 @@ namespace App\Controllers;
 
 
 use App\Actions\FileSystem;
+use App\Exceptions\Invalid2FA;
 use App\Models\User;
 use DI\DependencyException;
 use DI\NotFoundException;

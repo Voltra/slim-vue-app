@@ -25,6 +25,6 @@ class AcceptsRedirect extends Middleware
 	public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
     {
     	$request = $req->withAttribute($this->attr, true);
-    	return $handler->handle($req);
+    	return $handler->handle($request);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Middlewares;
 
 
+use App\Exceptions\InvalidRememberLogin;
 use Psr\Http\Message\ResponseInterface;
 use App\Actions\Auth as AuthAction;
 use DI\Container;
@@ -21,12 +22,20 @@ class Auth extends Middleware
 	}
 
 
+	/**
+	 * @param Request $req
+	 * @param RequestHandlerInterface $handler
+	 * @return ResponseInterface
+	 * @throws InvalidRememberLogin
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
+	 */
 	public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
 	{
 		//TODO: Check if this still works after migrating to SlimV4 middlewares
 
 		$rawResponse = $handler->handle($req);
 		$response = $this->responseUtils->upgrade($rawResponse);
-		return $this->auth->loginfromRemember($req, $response)->response;
+		return $this->auth->loginFromRemember($req, $response)->response;
 	}
 }

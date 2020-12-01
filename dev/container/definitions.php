@@ -185,6 +185,7 @@ $viaClassStrings = [
 		return new \Symfony\Bridge\Twig\Mime\BodyRenderer($view->getEnvironment());
 	},
 	\Symfony\Component\Mime\BodyRendererInterface::class => \DI\get(\Symfony\Bridge\Twig\Mime\BodyRenderer::class),
+	\App\Handlers\UniformErrorHandler::class => require("errors.php"),
 ];
 
 
