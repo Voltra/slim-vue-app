@@ -9,14 +9,17 @@ use Rakit\Validation\Validation;
 
 class Validator extends Action
 {
-	public function make(ServerRequestInterface $req, array $rules = [], array $messages = []): Validation
-	{
-		$data = array_merge(
+	public function dataFrom(ServerRequestInterface $req): array{
+		return array_merge(
 			$req->getQueryParams(),
 			$req->getParsedBody(),
 			$req->getUploadedFiles()
 		);
+	}
 
+	public function make(ServerRequestInterface $req, array $rules = [], array $messages = []): Validation
+	{
+		$data = $this->dataFrom($req);
 		return $this->makeValidation($data, $rules, $messages);
 	}
 

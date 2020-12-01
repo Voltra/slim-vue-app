@@ -19,7 +19,6 @@ use Carbon\Carbon;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Illuminate\Database\QueryException;
-use Interop\Container\Exception\ContainerException;
 use Psr\Http\Message\ServerRequestInterface;
 use DI\Container;
 use Slim\Psr7\Response;
@@ -41,7 +40,7 @@ class Auth extends Action
 	/**@var Session $session*/
 	protected $session;
 	/**
-	 * @var TwoFactor|mixed
+	 * @var TwoFactor
 	 */
 	protected $tfa;
 

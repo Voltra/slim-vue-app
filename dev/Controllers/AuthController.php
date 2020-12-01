@@ -8,6 +8,8 @@ use App\Exceptions\CannotRegisterUser;
 use App\Exceptions\InvalidLoginAttempt;
 use App\Exceptions\UserDoesNotExist;
 use App\Models\User;
+use App\Request\Auth\LoginRequest;
+use App\Request\Auth\RegisterRequest;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -15,7 +17,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 class AuthController extends Controller
 {
 	/**
-	 * @var Auth|mixed
+	 * @var Auth
 	 */
 	protected $auth;
 
@@ -54,19 +56,17 @@ class AuthController extends Controller
 	/**
 	 * POST /auth/login
 	 *
-	 * @param Request $request
+	 * @param LoginRequest $form
 	 * @param Response $response
 	 * @return Response
 	 * @throws \DI\DependencyException
 	 * @throws \DI\NotFoundException
 	 */
-	public function login(Request $request, Response $response){
-		$data = $request->getParsedBody();
-		//TODO: Validation
-		//TODO: Form requests
-		$username = $data["username"] ?? "";
-		$password = $data["password"] ?? "";
-		$remember = $data["remember"] ?? false;
+	public function login(LoginRequest $form, Response $response){
+		$data = $form->validatedData();
+		$username = $data["username"];
+		$password = $data["password"];
+		$remember = $data["remember"];
 
 		$res = $this->responseUtils->upgrade($response);
 
@@ -97,7 +97,7 @@ class AuthController extends Controller
 	/**
 	 * POST /auth/login
 	 *
-	 * @param Request $request
+	 * @param Request $form
 	 * @param Response $response
 	 * @return Response
 	 * @throws \DI\DependencyException
@@ -105,12 +105,12 @@ class AuthController extends Controller
 	 * @throws UserDoesNotExist
 	 * @throws InvalidLoginAttempt
 	 */
-	public function register(Request $request, Response $response){
-		$data = $request->getParsedBody();
-		$email = $data["email"] ?? "";
-		$username = $data["username"] ?? "";
-		$password = $data["password"] ?? "";
-		$remember = $data["remember"] ?? false;
+	public function register(RegisterRequest $form, Response $response){
+		$data = $form->validatedData();
+		$email = $data["email"];
+		$username = $data["username"];
+		$password = $data["password"];
+		$remember = $data["remember"];
 		$res = $this->responseUtils->upgrade($response);
 
 		try {
