@@ -6,6 +6,8 @@ namespace App\Middlewares;
 
 use App\Actions\TwoFactor;
 use App\Exceptions\Invalid2FA;
+use App\Exceptions\ReplayAttack2FA;
+use App\Exceptions\UserDoesNotExist;
 use App\Models\User;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -50,6 +52,10 @@ class Requires2FA extends Middleware
 	 * @param RequestHandlerInterface $handler
 	 * @return ResponseInterface
 	 * @throws Invalid2FA
+	 * @throws ReplayAttack2FA
+	 * @throws UserDoesNotExist
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
 	 */
 	public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -66,6 +72,10 @@ class Requires2FA extends Middleware
 	 * @param array|null|object $body
 	 * @return ResponseInterface|null
 	 * @throws Invalid2FA
+	 * @throws ReplayAttack2FA
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
+	 * @throws UserDoesNotExist
 	 */
 	protected function whenNotLoggedIn(Request $req, $body): ?ResponseInterface
 	{
@@ -82,6 +92,9 @@ class Requires2FA extends Middleware
 	 * @param array|null|object $body
 	 * @return ResponseInterface|null
 	 * @throws Invalid2FA
+	 * @throws ReplayAttack2FA
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
 	 */
 	protected function whenLoggedIn(Request $req, $body): ?ResponseInterface
 	{
@@ -94,14 +107,11 @@ class Requires2FA extends Middleware
 	 * @param array|null|object $body
 	 * @return ResponseInterface|null
 	 * @throws Invalid2FA
+	 * @throws ReplayAttack2FA
 	 */
 	protected function handleForUser(User $user, $body): ?ResponseInterface{
 		$code = $body[$this->codeKey] ?? "";
-		$isValid = $this->auth->handle2FA($user, $code);
-
-		if(!$isValid)
-			throw new Invalid2FA();
-
+		$this->auth->handle2FA($user, $code);
 		return null;
 	}
 }

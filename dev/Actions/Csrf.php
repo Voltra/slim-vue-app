@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Exceptions\CsrfTokenMismatch;
 use DI\Container;
 use SlimSession\Helper as Session;
 
@@ -71,5 +72,14 @@ class Csrf extends Action
 	{
 		if (!$this->hasToken())
 			$this->generateNewToken();
+	}
+
+	/**
+	 * @param string $token
+	 * @throws CsrfTokenMismatch
+	 */
+	public function check(string $token): void{
+		if(!$this->isValid($token))
+			throw new CsrfTokenMismatch();
 	}
 }

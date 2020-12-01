@@ -22,6 +22,12 @@ class Csrf extends Middleware
 		$this->csrf = $container->get(CsrfAction::class);
 	}
 
+	/**
+	 * @param Request $req
+	 * @param RequestHandlerInterface $handler
+	 * @return ResponseInterface
+	 * @throws CsrfTokenMismatch
+	 */
 	public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
 	{
 		$this->csrf->ensureHasToken();
@@ -31,8 +37,7 @@ class Csrf extends Middleware
 			$params = $req->getParsedBody();
 			$submittedToken = $params[$key] ?? "";
 
-			if (!$this->csrf->isValid($submittedToken))
-				throw new CsrfTokenMismatch();
+			$this->csrf->check($submittedToken);
 		}
 
 		$view = $this->container->get("view");

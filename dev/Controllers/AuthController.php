@@ -4,6 +4,9 @@
 namespace App\Controllers;
 
 use App\Actions\Auth;
+use App\Exceptions\CannotRegisterUser;
+use App\Exceptions\InvalidLoginAttempt;
+use App\Exceptions\UserDoesNotExist;
 use App\Models\User;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -54,6 +57,8 @@ class AuthController extends Controller
 	 * @param Request $request
 	 * @param Response $response
 	 * @return Response
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
 	 */
 	public function login(Request $request, Response $response){
 		$data = $request->getParsedBody();
@@ -65,25 +70,28 @@ class AuthController extends Controller
 
 		$res = $this->responseUtils->upgrade($response);
 
-		[$newResponse, $user] = $this->auth->login(
-			$res,
-			$username,
-			$password,
-			$remember
-		)->asArray();
+		try{
+			$newResponse = $this->auth->login(
+				$res,
+				$username,
+				$password,
+				$remember
+			)->response;
 
-		if($user === null){
-			$this->flash->failure("Failed to login");
-			return $this->responseUtils->redirectToRoute($newResponse, "auth.login", [
-				"old" => compact(
-					"username",
-					"remember"
-				),
-			]);
-		}else{
 			$this->flash->success("Successful login as {$username}");
 			return $this->redirectHome($newResponse);
+		}catch(UserDoesNotExist $e){
+			$this->flash->failure("This user does not exist");
+		}catch(InvalidLoginAttempt $e){
+			$this->flash->failure("Invalid password");
 		}
+
+		return $this->responseUtils->redirectToRoute($res, "auth.login", [
+			"old" => compact(
+				"username",
+				"remember"
+			),
+		]);
 	}
 
 	/**
@@ -92,6 +100,10 @@ class AuthController extends Controller
 	 * @param Request $request
 	 * @param Response $response
 	 * @return Response
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
+	 * @throws UserDoesNotExist
+	 * @throws InvalidLoginAttempt
 	 */
 	public function register(Request $request, Response $response){
 		$data = $request->getParsedBody();
@@ -101,16 +113,15 @@ class AuthController extends Controller
 		$remember = $data["remember"] ?? false;
 		$res = $this->responseUtils->upgrade($response);
 
-		[$newResponse, $user] = $this->auth->register($res, $email, $username, $password, $remember)->asArray();
-
-		if($user === null){
-			$this->flash->failure("Failed to register $username");
-		}else{
+		try {
+			$res = $this->auth->register($res, $email, $username, $password, $remember)->response;
 			$this->flash->success("Successfully registered $username");
+		}catch (CannotRegisterUser $e){
+			$this->flash->failure("Failed to register $username");
 		}
 
 
-		return $this->redirectHome($newResponse, [
+		return $this->redirectHome($res, [
 			"old" => compact(
 				"email",
 				"username",
@@ -125,6 +136,8 @@ class AuthController extends Controller
 	 *
 	 * @param Response $response
 	 * @return Response
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
 	 */
 	public function logout(Response $response){
 		$res = $this->responseUtils->upgrade($response);
