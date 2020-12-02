@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Request;
+namespace App\Requests;
 
 
 use App\Actions\Validator;
@@ -92,8 +92,9 @@ abstract class FormRequest
 			);
 
 			$this->validation->validate();
+			if($this->validation->fails())
+				throw new \Exception(); // delegate to the catch clause
 		}catch (\Throwable $e){
-			dd($e);
 			$errors = [];
 			if($this->validation !== null)
 				$errors = $this->validation->errors()->toArray();

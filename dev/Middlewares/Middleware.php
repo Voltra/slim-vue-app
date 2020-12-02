@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use SlimSession\Helper as Session;
 
 abstract class Middleware implements MiddlewareInterface
 {
@@ -31,6 +32,11 @@ abstract class Middleware implements MiddlewareInterface
 	 */
 	protected $settings;
 
+	/**
+	 * @var Session
+	 */
+	protected $session;
+
 	public function __invoke(Request $req, RequestHandlerInterface $handler): ResponseInterface
 	{
 		return $this->process($req, $handler);
@@ -50,5 +56,6 @@ abstract class Middleware implements MiddlewareInterface
 
 		$this->config = $container->get(Config::class);
 		$this->settings = $container->get("settings");
+		$this->session = $container->get(Session::class);
 	}
 }

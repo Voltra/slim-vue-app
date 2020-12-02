@@ -46,4 +46,18 @@ class Response extends Action
 		$res->getBody()->write($json);
 		return $res->withHeader("Content-Type", "application/json");
 	}
+
+	/**
+	 * @param ResponseInterface $res
+	 * @param int $status
+	 * @return ResponseInterface
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
+	 */
+	public function redirectBack(ResponseInterface $res, int $status = Httpstatuscodes::HTTP_TEMPORARY_REDIRECT){
+		$back = $this->session->get("last_url");
+		return $back === null
+			? $this->redirectToRoute($res, "home")
+			: $this->redirectWith($res, $back, $status);
+	}
 }

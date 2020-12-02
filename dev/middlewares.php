@@ -47,7 +47,8 @@ return static function(App $app, Container $container, $config, $settings){
 	->add(\App\Middlewares\Auth::from($container))
 	->add(\App\Middlewares\RequestBinding::from($container)) // Add request to the container
 	->add(new WhoopsMiddleware())
-	->add(\App\Middlewares\UniformErrorHandling::from($container));
+	->add(\App\Middlewares\UniformErrorHandling::from($container))
+	->add(\App\Middlewares\FormRequestErrors::from($container));
 
 	$eh = new UnhandledExceptionHandler($app->getCallableResolver(), $app->getResponseFactory());
 	$request = ServerRequestCreatorFactory::create()->createServerRequestFromGlobals();

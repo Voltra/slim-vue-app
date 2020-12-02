@@ -54,7 +54,6 @@ class Auth extends Action
 		$this->cookieExpiry = $config["remember_exp"];
 		$this->separator = $config["cookie_separator"];
 		$this->containerKey = $config["container"];
-		$this->session = $container->get("session");
 
 		$this->hash = $container->get(Hash::class);
 		$this->cookies = $container->get(Cookies::class);

@@ -128,6 +128,7 @@ $viaKeys = [
 \******************************************************************************************************************/
 $viaClassStrings = [
 	ContainerInterface::class => static function(Container $container){ return $container; },
+	Session::class => \DI\get("session"),
 	LoggerInterface::class => \DI\get("logger"),
 	Twig::class => \DI\get("view"),
 	Config::class => \DI\get("config"),
