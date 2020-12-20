@@ -29,7 +29,7 @@ class RouteModelBinding extends Middleware
 		if(is_null($route))
 			throw new HttpNotFoundException($req);
 
-		$parameterMapping = $this->config->get("viewModelBinding", []);
+		$parameterMapping = $this->config->get("routeModelBinding", []);
 		collect($parameterMapping)
 			->lazy()
 			->filter(function ($mapping, $parameter) use($route){

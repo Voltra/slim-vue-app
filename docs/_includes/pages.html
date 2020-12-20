@@ -1,0 +1,18 @@
+{%- for item in site.data.nav -%}
+	<dl class="nav-item">
+		<dt>{{ item[0] | capitalize }}</dt>
+		<dd>
+			<ul>
+				{% for rpath in item[1] %}
+				{%- assign mpath = item[0] | append: "/" | append: rpath | append: ".markdown" -%}
+				{%- assign mpage = site.pages | find: "path", mpath -%}
+				{%- if mpage.title -%}
+				<li>
+					<a class="page-link" href="{{ mpage.url | relative_url }}">{{ mpage.title | escape }}</a>
+				</li>
+				{%- endif -%}
+				{% endfor %}
+			</ul>
+		</dd>
+	</dl>
+{%- endfor -%}

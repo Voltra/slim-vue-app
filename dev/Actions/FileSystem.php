@@ -15,7 +15,8 @@ class FileSystem extends Action
 	 * @throws \DI\DependencyException
 	 * @throws \DI\NotFoundException
 	 */
-	public function for(string $adapterClass){
+	public function for(string $adapterClass): \League\Flysystem\Filesystem
+	{
 		/**
 		 * @var AdapterInterface $adapter
 		 */

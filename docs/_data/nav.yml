@@ -1,0 +1,5 @@
+functionalities:
+    - actions
+    - config
+    - container
+    - uniform-error-handler

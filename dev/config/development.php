@@ -31,10 +31,12 @@ return [
 	],
 	"session" => [
 		"name" => "session",
+		"samesite" => "Strict",
 		"autorefresh" => true,
 		"lifetime" => "2 hours",
 		"samesite" => true,
 		"httponly" => true,
+		"secure" => false,
 	],
 	"hash" => [
 		"algo" => PASSWORD_BCRYPT,
@@ -59,7 +61,7 @@ return [
 		"collation" => "utf8_unicode_ci",
 		"prefix" => "",
 	],
-	"viewModelBinding" => [
+	"routeModelBinding" => [
 		"__user" => [
 			"model" => \App\Models\User::class,
 			"column" => "username",

@@ -52,16 +52,16 @@ class RedirectAfterRequest extends Middleware
 
     	try{
 			if($this->mode === "qs")
-				$url = $this->processQueryString($req, $handler);
+				$url = $this->extractFromQueryString($req, $handler);
 			else if($this->mode === "body")
-				$url =  $this->processBody($req, $handler);
+				$url =  $this->extractFromBody($req, $handler);
 		}catch(\Throwable $e){}
 
     	$res = $handler->handle($req);
-    	return $url !== null ? $this->responseUtils->redirect($res, $url) : $res;
+    	return $url !== null && $this->shouldRedirect($req) ? $this->responseUtils->redirect($res, $url) : $res;
     }
 
-	protected function processQueryString(Request $req, RequestHandlerInterface $handler)
+	protected function extractFromQueryString(Request $req, RequestHandlerInterface $handler)
 	{
 		return $req->getQueryParams()[$this->key];
 		//TODO: Make sure it's a valid URL?
@@ -69,7 +69,7 @@ class RedirectAfterRequest extends Middleware
 		return $this->responseUtils->redirect($res, $url);*/
 	}
 
-	protected function processBody(Request $req, RequestHandlerInterface $handler)
+	protected function extractFromBody(Request $req, RequestHandlerInterface $handler)
 	{
 		return $req->getParsedBody()[$this->key];
 		//TODO: Make sure it's a valid URL?

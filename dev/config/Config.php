@@ -64,7 +64,7 @@ class Config extends HassankhanConfig
 				"collation" => "",
 				"prefix" => "",
 			],
-			"viewModelBinding" => [],
+			"routeModelBinding" => [],
 			"redirect" => [
 				"mode" => "qs",
 				"key" => "redir",

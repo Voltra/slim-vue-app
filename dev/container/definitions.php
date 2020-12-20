@@ -63,8 +63,8 @@ $viaKeys = [
 
 		$logger = new Logger($settings["name"]);
 		$logger->pushHandler(new StreamHandler(
-				Path::root($settings["path"]),
-				$settings["level"])
+			Path::root($settings["path"]),
+			$settings["level"])
 		);
 
 		return $logger;

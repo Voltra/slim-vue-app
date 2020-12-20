@@ -11,16 +11,18 @@ use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Psr7\Response;
 use SlimSession\Helper as Session;
 
-function doThrow(string $class = HttpInternalServerErrorException::class): callable{
+function doThrow(string $class): callable{
 	return function(Throwable $e, Request $req) use ($class): Response {
 		throw new $class();
 	};
 }
 
 return static function(Container $container){
+	$throwInternalServerError = doThrow(HttpInternalServerErrorException::class);
+
 	return new UniformErrorHandler([
-		NotFoundExceptionInterface::class => doThrow(HttpInternalServerErrorException::class),
-		ContainerExceptionInterface::class => doThrow(HttpInternalServerErrorException::class),
+		NotFoundExceptionInterface::class => $throwInternalServerError,
+		ContainerExceptionInterface::class => $throwInternalServerError,
 		InvalidFormRequest::class => static function(InvalidFormRequest $e, Request $req){
 			$errors = $e->getErrors();
 

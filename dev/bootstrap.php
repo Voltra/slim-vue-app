@@ -7,6 +7,7 @@ require_once "env.php";
 
 $container = require_once("container.php");
 require_once "events.php"; // register events' listeners
+
 $config = $container->get("config");
 $settings = $container->get("settings");
 

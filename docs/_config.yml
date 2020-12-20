@@ -1,3 +1,27 @@
+logo: "/assets/images/logo.png"
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 5
+  rel_url: false
+  button: false
+heading_anchors: true
+
+collections_dir: collections
+collections:
+  functionalities:
+    output: true
+    order:
+      - actions.markdown
+      - config.markdown
+      - container.markdown
+      - uniform-error-handler.markdown
+
+just_the_docs:
+  collections:
+    functionalities:
+      name: Functionalities
+
 # Welcome to Jekyll!
 #
 # This config file is meant for settings that affect your whole blog, values
@@ -8,7 +32,7 @@
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'bundle exec jekyll serve'. If you change this file, please restart the server process.
 #
-# If you need help with YAML syntax, here are some quick references for you: 
+# If you need help with YAML syntax, here are some quick references for you:
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 #
@@ -18,21 +42,19 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Your awesome title
-email: your-email@example.com
+title: Slim-Vue-App
+email: ludwig.guerin.98@gmx.fr
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  Documentation and guide for the starter project slim-vue-app
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
+twitter_username:
+github_username:  Voltra
 
 # Build settings
-theme: minima
+#theme: minima
+theme: just-the-docs
 plugins:
-  - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
 
