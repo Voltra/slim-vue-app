@@ -66,3 +66,11 @@ The views are located in `dev/views/`. You can find partials and layouts in `dev
 	* `flash` that displays each flash message
 	* `globalCSS` that loads the global stylesheets
 	* `globalJS` that loads the global scripts
+
+
+There are also default views for error pages :
+* `dev/views/errors/400.twig` for Bad Request
+* `dev/views/errors/401.twig` for Unauthorized
+* `dev/views/errors/403.twig` for Forbidden
+* `dev/views/errors/404.twig` for Not Found
+* `dev/views/errors/500.twig` for Internal Server Error
