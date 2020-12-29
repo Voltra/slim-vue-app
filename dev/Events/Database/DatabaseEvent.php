@@ -7,7 +7,7 @@ namespace App\Events\Database;
 use App\Events\Event;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-class DatabaseEvent extends Event
+abstract class DatabaseEvent extends Event
 {
 	/**
 	 * @var Capsule

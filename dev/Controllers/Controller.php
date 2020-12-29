@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Views\Twig;
 
-class Controller
+abstract class Controller
 {
 	/**
 	 * @var ContainerInterface

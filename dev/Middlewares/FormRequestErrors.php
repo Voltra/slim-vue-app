@@ -33,6 +33,8 @@ class FormRequestErrors extends Middleware
 			$view->getEnvironment()->addGlobal($errorsKey, $errors);
 		}
 
-    	return $handler->handle($req);
+    	$res = $handler->handle($req);
+    	$this->session->delete($errorsKey); // only display errors once
+    	return $res;
     }
 }

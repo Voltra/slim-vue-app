@@ -1,4 +1,5 @@
 logo: "/assets/images/logo.png"
+color_scheme: voltra
 search_enabled: true
 search:
   heading_level: 2

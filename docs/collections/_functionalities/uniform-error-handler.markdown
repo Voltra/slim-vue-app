@@ -14,13 +14,19 @@ A callback accepts the exception as its first parameter and the request as its s
 ```php
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Exceptions\InvalidFormRequest;
+use App\Exceptions\MyException;
 use Slim\Psr7\Response;
 
 [
-	InvalidFormRequest::class => static function(InvalidFormRequest $e, Request $req): Response{
+	MyException::class => static function(MyException $e, Request $req): Response{
 		// handle the exception here
 		// return the appropriate response
 	},
 ];
 ```
+
+For instance, this allows to redirect back with errors on `App\Exceptions\InvalidFormRequest` or to throw the
+usual `Slim\Exception\HttpInternalServerErrorException` on container exceptions.
+
+Note that legacy PHP internal errors are all handled by `App\Handlers\LegacyPhpErrorHandler` and throw back a
+`App\Exceptions\LegacyPhpError`.

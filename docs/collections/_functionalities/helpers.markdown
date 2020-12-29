@@ -3,10 +3,9 @@
 # To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 
 layout: home
-title: Listing
-nav_order: 3
-has_toc: false
-has_children: false
+parent: Functionalities
+nav_order: 13
+title: Helpers
 ---
 
-{% include pages.html %}
+//TODO: Helpers

@@ -69,4 +69,4 @@ Here's a list of the default actions and what they provide :
 	* create a validator from a request
 	* create a validator from an array of data
 
-All are predefined in the [container specific configuration](TODO: URL) so that you can inject them or resolve them easily.
+All are predefined in the [container specific configuration]({{ 'functionalities/container' | relative_url }}) so that you can inject them or resolve them easily.

@@ -18,4 +18,4 @@ The container's setup is located in `dev/container/definitions.php`. It is separ
 It allows for constructor injection only (except for controller methods which are resolved separately).
 There is also the handy `resolve` global function that allows to get anything from the container from anywhere.
 
-The container also declares the handling of specific exceptions through the [`App\Handlers\UniformErrorHandler`](./uniform-error-handler).
+The container also declares the handling of specific exceptions through the [`App\Handlers\UniformErrorHandler`]({{ 'functionalities/uniform-error-handler' | relative_url }}).

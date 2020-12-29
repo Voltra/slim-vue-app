@@ -1,0 +1,96 @@
+// [variables]
+$primary: #0087B3;
+$secondary: #006181;
+$ternary: #09c6d6;
+$accent: $ternary;
+$info: #0c549b;
+$error: #B62222;
+$warning: #E9D30F;
+// [/variables]
+
+@function dark($color){
+	@return darken($color, 1%);
+}
+
+@mixin transition{
+	transition: .3s ease-in-out;
+	transition-property: background;
+}
+
+@mixin button($color, $text: white){
+	@include transition;
+
+	background: $color;
+	color: $text;
+
+	&:hover, &:focus{
+		background: dark($color);
+		color: $text;
+	}
+}
+
+@mixin label($color, $text: white){
+	@include button($color, $text);
+	$size: .5rem;
+
+	padding: $size/2 $size;
+}
+
+
+.btn{
+	&-blue,
+	&-accent{
+		@include button($accent);
+	}
+
+	&-purple,
+	&-primary{
+		@include button($primary);
+	}
+
+	&-secondary{
+		@include button($secondary);
+	}
+
+	&-info{
+		@include button($info);
+	}
+
+	&-error{
+		@include button($error);
+	}
+
+	&-warning{
+		@include button($warning);
+	}
+}
+
+.label{
+	@include label($primary);
+
+	&-blue,
+	&-secondary{
+		@include label($secondary);
+	}
+
+	&-green,
+	&-accent{
+		@include label($accent);
+	}
+
+	&-purple,
+	&-info{
+		@include label($info);
+	}
+
+	&-yellow,
+	&-warning{
+		@include label($warning);
+	}
+
+	&-red,
+	&-failure,
+	&-error{
+		@include label($error);
+	}
+}

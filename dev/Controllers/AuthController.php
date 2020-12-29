@@ -116,12 +116,13 @@ class AuthController extends Controller
 		try {
 			$res = $this->auth->register($res, $email, $username, $password, $remember)->response;
 			$this->flash->success("Successfully registered $username");
+			return $this->redirectHome($res);
 		}catch (CannotRegisterUser $e){
 			$this->flash->failure("Failed to register $username");
 		}
 
 
-		return $this->redirectHome($res, [
+		return $this->responseUtils->redirectToRoute($res, "auth.register", [
 			"old" => compact(
 				"email",
 				"username",

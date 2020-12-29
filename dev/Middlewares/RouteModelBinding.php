@@ -4,6 +4,7 @@
 namespace App\Middlewares;
 
 
+use App\Exceptions\RouteModelBindingFailure;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Psr\Container\ContainerInterface;
@@ -20,6 +21,7 @@ class RouteModelBinding extends Middleware
 	/**
 	 * @inheritDoc
 	 * @throws HttpNotFoundException
+	 * @throws RouteModelBindingFailure
 	 */
     public function process(Request $req, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -44,7 +46,7 @@ class RouteModelBinding extends Middleware
 				 */
 				$model = $modelClass::firstWhere($discriminantKey, $discriminantValue);
 				if(is_null($model))
-					throw new HttpNotFoundException($req);
+					throw RouteModelBindingFailure::of($parameter);
 
 				$route->setArgument($parameter, $model); //TODO: Fix the fact that it converts to string
 				$this->container->set($modelClass, $model); //WARNING: Dangerous fix w/ PHP-DI
