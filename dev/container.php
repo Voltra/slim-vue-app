@@ -15,21 +15,23 @@ $container = $builder->build();
 /**
  * Resolve a dependency using the DI container
  * @template T
- * @param class-string<T>|string $key
+ * @param class-string<T>|string|mixed $key
  * @return T|mixed
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException
  */
 function resolve($key){
 	global $container;
-	return $container->get($key);
+	return is_string($key) ? $container->get($key) : $key;
 }
 
-function controllerMethod(string $controllerClass, string $method){
+function controllerMethod(string $controllerClass, string $method): string
+{
 	return \App\Helpers\Routing::controllerMethod($controllerClass, $method);
 }
 
-function cm(string $controllerClass, string $method){
+function cm(string $controllerClass, string $method): string
+{
 	return controllerMethod($controllerClass, $method);
 }
 

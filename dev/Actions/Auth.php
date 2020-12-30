@@ -22,7 +22,6 @@ use Illuminate\Database\QueryException;
 use Psr\Http\Message\ServerRequestInterface;
 use DI\Container;
 use Slim\Psr7\Response;
-use SlimSession\Helper as Session;
 
 class Auth extends Action
 {
@@ -37,7 +36,7 @@ class Auth extends Action
 	/**@var Random $random*/
 	protected $random;
 
-	/**@var Session $session*/
+	/**@var \App\Helpers\Session $session*/
 	protected $session;
 	/**
 	 * @var TwoFactor

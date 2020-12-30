@@ -9,8 +9,9 @@ use App\Helpers\TwigExtensions\FlashExtension;
 use App\Helpers\TwigExtensions\MjmlExtension;
 use App\Helpers\TwigExtensions\PathExtension;
 use DI\Container;
+use DI\Definition\Helper\AutowireDefinitionHelper;
+use DI\Definition\Helper\CreateDefinitionHelper;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Env;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Container\ContainerInterface;
@@ -22,12 +23,11 @@ use Slim\Routing\Route;
 use Slim\Routing\RouteContext;
 use Slim\Routing\RouteParser;
 use Slim\Views\Twig;
-use SlimSession\Helper as Session;
 use Slim\Flash\Messages as FlashMessages;
 
 /**
  * @param string[] $classes
- * @returns array<string, \DI\Definition\Helper\AutowireDefinitionHelper>
+ * @returns array<string, AutowireDefinitionHelper>
  * @return array
  */
 function autowired(array $classes): array{
@@ -39,9 +39,10 @@ function autowired(array $classes): array{
 /**
  * @param string|null $class
  * @param mixed ...$args
- * @return \DI\Definition\Helper\CreateDefinitionHelper
+ * @return CreateDefinitionHelper
  */
-function construct(?string $class = null, ...$args){
+function construct(?string $class = null, ...$args): CreateDefinitionHelper
+{
 	return \DI\create($class)->constructor(...$args);
 }
 
@@ -70,7 +71,7 @@ $viaKeys = [
 		return $logger;
 	},
 	"session" => static function (Container $container){
-		return new Session();
+		return new \App\Helpers\Session();
 	},
 	"flash" => static function(Container $container){
 		session_start();
@@ -128,7 +129,7 @@ $viaKeys = [
 \******************************************************************************************************************/
 $viaClassStrings = [
 	ContainerInterface::class => static function(Container $container){ return $container; },
-	Session::class => \DI\get("session"),
+	\App\Helpers\Session::class => \DI\get("session"),
 	LoggerInterface::class => \DI\get("logger"),
 	Twig::class => \DI\get("view"),
 	Config::class => \DI\get("config"),

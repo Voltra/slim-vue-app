@@ -2,8 +2,8 @@
 
 namespace App\Config;
 
-use Illuminate\Support\Env;
-use Noodlehaus\Config as HassankhanConfig;
+use App\Helpers\Env;
+use App\Helpers\HassankhanConfig;
 use Monolog\Logger;
 
 class Config extends HassankhanConfig

@@ -3,8 +3,8 @@
 namespace App\Actions;
 
 use App\Config\Config;
+use App\Helpers\Session;
 use DI\Container;
-use SlimSession\Helper as Session;
 
 abstract class Action
 {
@@ -17,7 +17,7 @@ abstract class Action
 	protected $config;
 
 	/**
-	 * @var Session
+	 * @var Session $session
 	 */
 	protected $session;
 

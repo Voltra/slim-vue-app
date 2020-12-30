@@ -30,3 +30,5 @@ usual `Slim\Exception\HttpInternalServerErrorException` on container exceptions.
 
 Note that legacy PHP internal errors are all handled by `App\Handlers\LegacyPhpErrorHandler` and throw back a
 `App\Exceptions\LegacyPhpError`.
+
+This allows the development of exception/failure driven applications for better decoupled logic and error handling.

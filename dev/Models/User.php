@@ -1,9 +1,6 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\QueryException;
 
 class User extends Model{
 //	protected $table = "users";

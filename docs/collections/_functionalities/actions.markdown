@@ -49,6 +49,9 @@ Here's a list of the default actions and what they provide :
 	* check if a password matches a given hash
 	* simple hash a string
 	* check if a string matches a given simple hash
+* `App\Actions\Http` that allows to emit HTTP requests
+	* based on [`kitetail/zttp`](https://packagist.org/packages/kitetail/zttp)
+	* methods are just delegated to the `Zttp` facade
 * `App\Actions\Random` that allows to generate random data
 	* generate a random string (configured length and alphabet)
 * `App\Actions\Response` that allows for easy response manipulation

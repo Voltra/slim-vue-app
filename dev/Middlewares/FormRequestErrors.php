@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Views\Twig;
-use SlimSession\Helper as Session;
 
 class FormRequestErrors extends Middleware
 {

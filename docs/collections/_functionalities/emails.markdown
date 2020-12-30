@@ -32,6 +32,19 @@ class Mail extends TemplatedEmail{
 	 * @throws TransportExceptionInterface
 	 */
 	public function send(array $context = []): void{}
+
+	/**
+	 * Mail constructor.
+	 * @param Headers|null $headers
+	 * @throws DependencyException
+	 * @throws NotFoundException
+	 */
+	public function __construct(?Headers $headers = null){}
+
+	/**
+	 * Prepare this Mail instance
+	 */
+	protected function initialSetup(): void{}
 }
 
 Mail::create()
@@ -40,3 +53,5 @@ Mail::create()
 	->template("demo.mjml.twig") // points to dev/views/mails/demo.mjml.twig
 	->send();
 ```
+
+Custom messages may override the constructor for additional parameters and `initialSetup` to prepare the mail instance.

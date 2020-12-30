@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Pivot;
-
-class RolePermission extends Pivot {
+class RolePermission extends PivotTable {
 	protected $table = "role_permissions";
 }

@@ -7,6 +7,9 @@ search:
   rel_url: false
   button: false
 heading_anchors: true
+aux_links:
+  "slim-vue-app on Github":
+    - https://github.com/Voltra/slim-vue-app
 
 collections_dir: collections
 collections:
@@ -17,11 +20,15 @@ collections:
       - config.markdown
       - container.markdown
       - uniform-error-handler.markdown
+  frontend:
+    output: true
 
 just_the_docs:
   collections:
     functionalities:
       name: Functionalities
+    frontend:
+      name: Front-end
 
 # Welcome to Jekyll!
 #

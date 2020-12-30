@@ -11,7 +11,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\Exception\HttpNotFoundException;
 use Slim\Psr7\Response;
-use SlimSession\Helper as Session;
 
 function doThrow(string $class): callable{
 	return function(Throwable $e, Request $req) use ($class): Response {
@@ -31,9 +30,9 @@ return static function(Container $container){
 			$errors = $e->getErrors();
 
 			/**
-			 * @var Session $session
+			 * @var \App\Helpers\Session $session
 			 */
-			$session = resolve(Session::class);
+			$session = resolve(\App\Helpers\Session::class);
 			$session->set("errors", $errors);
 
 			/**

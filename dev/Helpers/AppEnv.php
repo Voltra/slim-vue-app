@@ -4,8 +4,6 @@
 namespace App\Helpers;
 
 
-use Illuminate\Support\Env;
-
 abstract class AppEnv
 {
 	const PROD = "production";

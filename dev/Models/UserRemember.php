@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
 class UserRemember extends Model{
 	protected $table = "user_remember";
 	protected $fillable = ["user_id", "remember_id", "remember_token"];

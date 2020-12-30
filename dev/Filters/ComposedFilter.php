@@ -57,7 +57,7 @@ class ComposedFilter extends Filter{
 
 /**
  * Compose a series of filters (left associative)
- * @param string[] $filterClasses - The class names of the filters to compose (will be resolved via the DI container)
+ * @param non-empty-array<string|Filter> $filterClasses - The class names of the filters (or actual filter instances) to compose (will be resolved via the DI container)
  * @return ComposedFilter|Filter
  * @throws \DI\DependencyException
  * @throws \DI\NotFoundException

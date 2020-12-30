@@ -74,3 +74,6 @@ There are also default views for error pages :
 * `dev/views/errors/403.twig` for Forbidden
 * `dev/views/errors/404.twig` for Not Found
 * `dev/views/errors/500.twig` for Internal Server Error
+
+
+> `kanellov/slim-twig-flash` has been removed due to incompatibility w/ Twig 3 and replaced with a homemade solution

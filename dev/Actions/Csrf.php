@@ -3,8 +3,8 @@
 namespace App\Actions;
 
 use App\Exceptions\CsrfTokenMismatch;
+use App\Helpers\Session;
 use DI\Container;
-use SlimSession\Helper as Session;
 
 class Csrf extends Action
 {

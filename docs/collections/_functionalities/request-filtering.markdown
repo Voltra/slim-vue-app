@@ -50,10 +50,14 @@ There are a few provided filters:
 * `App\Filters\UserFilter` the dual of `VisitorFilter` (i.e. only connected users)
 * `App\Filters\LogoutFilter` that is only used to have access to the logout functionality
 * `App\Filters\ComposedFilter` that is used to compose filters (two by two)
+* `App\Filters\Can` that is used to limit access to users with a given permission
+* `App\Filters\HasRole` that is used to limit access to users with a given role
 
 There are utility functions that allow to construct filters easily:
 * `App\Filters\filter(string $class)` that constructs a filter from its classname
-* `App\Filters\composeFilters(array $filterClasses)` that constructs a composed filters that combines all the filters (constructed from their classnames)
+* `App\Filters\composeFilters((string|Filter)[] $filterClasses)` that constructs a composed filters that combines all the filters (constructed from their classnames or actual instances)
+* `App\Filters\can(string|?Permission $permission)` that constructs a `App\Filters\Can` for the given permission
+* `App\Filters\hasRole(string|?Role $role)` that constructs a `App\Filters\HasRole` for the given role
 
 For instance:
 ```php
@@ -65,4 +69,10 @@ $app->get("/post/{__post}", function(){})
 		UserFilter::class,
 		PostAuthorFilter::class,
 	]));
+
+$app->get("/post/{__post}/review", function(){})
+	->add(can("posts.review"));
+
+$app->get("/healthcheck", function(){})
+	->add(hasRole("healthChecker"));
 ```

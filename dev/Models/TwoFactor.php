@@ -4,7 +4,7 @@
 namespace App\Models;
 
 
-class TwoFactor extends \Illuminate\Database\Eloquent\Model
+class TwoFactor extends Model
 {
 	protected $table = "2fa";
 	protected $fillable = ["discriminant", "latest_code"];

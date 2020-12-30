@@ -5,7 +5,7 @@ namespace App\Middlewares;
 
 
 use App\Handlers\UniformErrorHandler;
-use LazyCollection\Stream;
+use App\Helpers\Stream;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
