@@ -29,6 +29,9 @@ GEM
       rouge (~> 3.0)
       safe_yaml (~> 1.0)
       terminal-table (~> 1.8)
+    jekyll-external-links (1.0.1)
+      jekyll (~> 4.0)
+      nokogiri
     jekyll-feed (0.15.1)
       jekyll (>= 3.7, < 5.0)
     jekyll-sass-converter (2.1.0)
@@ -37,6 +40,9 @@ GEM
       jekyll (>= 3.8, < 5.0)
     jekyll-sitemap (1.4.0)
       jekyll (>= 3.7, < 5.0)
+    jekyll-target-blank (2.0.0)
+      jekyll (>= 3.0, < 5.0)
+      nokogiri (~> 1.10)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
     just-the-docs (0.3.3)
@@ -52,10 +58,13 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     mercenary (0.4.0)
+    mini_portile2 (2.4.0)
     minima (2.5.1)
       jekyll (>= 3.5, < 5.0)
       jekyll-feed (~> 0.9)
       jekyll-seo-tag (~> 2.1)
+    nokogiri (1.10.10-x64-mingw32)
+      mini_portile2 (~> 2.4.0)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (4.0.6)
@@ -82,8 +91,10 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
+  jekyll-external-links
   jekyll-seo-tag
   jekyll-sitemap
+  jekyll-target-blank
   just-the-docs
   minima (~> 2.5)
   tzinfo (~> 1.2)

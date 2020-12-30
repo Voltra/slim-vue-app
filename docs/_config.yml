@@ -55,7 +55,7 @@ email: ludwig.guerin.98@gmx.fr
 description: >- # this means to ignore newlines until "baseurl:"
   Documentation and guide for the starter project slim-vue-app
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: http://localhost:4000 # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username:
 github_username:  Voltra
 
@@ -65,6 +65,7 @@ theme: just-the-docs
 plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-target-blank
 
 # Exclude from processing.
 # The following items will not be processed, by default.
