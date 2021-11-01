@@ -1,6 +1,7 @@
 import { make } from "vuex-pathify";
 import state from "./state";
 
+
 /**
  * @type {import("vuex").MutationTree}
  */
